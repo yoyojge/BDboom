@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wishlist{% endblock %}
+
+{% block body %}
+    <h1>Wishlist</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ wishlist.id }}</td>
+            </tr>
+            <tr>
+                <th>WishlistName</th>
+                <td>{{ wishlist.wishlistName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_wishlist_index') }}">back to list</a>
+
+    <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">edit</a>
+
+    {{ include('wishlist/_delete_form.html.twig') }}
+{% endblock %}

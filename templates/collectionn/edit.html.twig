@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Collectionn{% endblock %}
+
+{% block body %}
+    <h1>Edit Collectionn</h1>
+
+    {{ include('collectionn/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_collectionn_index') }}">back to list</a>
+
+    {{ include('collectionn/_delete_form.html.twig') }}
+{% endblock %}

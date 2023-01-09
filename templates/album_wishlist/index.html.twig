@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AlbumWishlist index{% endblock %}
+
+{% block body %}
+    <h1>AlbumWishlist index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for album_wishlist in album_wishlists %}
+            <tr>
+                <td>{{ album_wishlist.id }}</td>
+                <td>
+                    <a href="{{ path('app_album_wishlist_show', {'id': album_wishlist.id}) }}">show</a>
+                    <a href="{{ path('app_album_wishlist_edit', {'id': album_wishlist.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_album_wishlist_new') }}">Create new</a>
+{% endblock %}

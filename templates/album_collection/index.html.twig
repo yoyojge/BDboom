@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AlbumCollection index{% endblock %}
+
+{% block body %}
+    <h1>AlbumCollection index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for album_collection in album_collections %}
+            <tr>
+                <td>{{ album_collection.id }}</td>
+                <td>
+                    <a href="{{ path('app_album_collection_show', {'id': album_collection.id}) }}">show</a>
+                    <a href="{{ path('app_album_collection_edit', {'id': album_collection.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_album_collection_new') }}">Create new</a>
+{% endblock %}

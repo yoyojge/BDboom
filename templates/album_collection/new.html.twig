@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New AlbumCollection{% endblock %}
+
+{% block body %}
+    <h1>Create new AlbumCollection</h1>
+
+    {{ include('album_collection/_form.html.twig') }}
+
+    <a href="{{ path('app_album_collection_index') }}">back to list</a>
+{% endblock %}
