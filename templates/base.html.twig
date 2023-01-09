@@ -2,7 +2,13 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}BDboom, solution de gestion de collections de BD!{% endblock %}</title>
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -12,8 +18,85 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+
+        <!-- TARTE AU CITRON -->
+     
+
+
+     <script src="/tarteaucitron/tarteaucitron.js"></script>
+
+<script>
+tarteaucitron.init({
+    "privacyUrl": "", /* Privacy policy url */
+    "bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
+
+    "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+    "cookieName": "tarteaucitron", /* Cookie name */
+
+    "orientation": "middle", /* Banner position (top - bottom - middle - popup) */
+
+    "groupServices": false, /* Group services by category */
+    "serviceDefaultState": "wait", /* Default state (true - wait - false) */
+
+    "showAlertSmall": false, /* Show the small banner on bottom right */
+    "cookieslist": false, /* Show the cookie list */
+    
+    "showIcon": true, /* Show cookie icon to manage cookies */
+    // "iconSrc": "", /* Optionnal: URL or base64 encoded image */
+    "iconPosition": "BottomRight", /* Position of the icon between BottomRight, BottomLeft, TopRight and TopLeft */
+
+    "adblocker": false, /* Show a Warning if an adblocker is detected */
+
+    "DenyAllCta" : true, /* Show the deny all button */
+    "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
+    "highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+
+    "handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+
+    "removeCredit": false, /* Remove credit link */
+    "moreInfoLink": true, /* Show more info link */
+    "useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+    "useExternalJs": false, /* If false, the tarteaucitron.services.js file will be loaded */
+
+    //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for subdomain website */
+
+    "readmoreLink": "", /* Change the default readmore link pointing to tarteaucitron.io */
+    
+    "mandatory": true, /* Show a message about mandatory cookies */
+    "mandatoryCta": true /* Show the disabled accept button when mandatory on */
+});
+
+          tarteaucitron.user.googletagmanagerId = 'GTM-WSXBKTQ';
+        (tarteaucitron.job = tarteaucitron.job || []).push('googletagmanager');
+
+</script>
+
+
+
+
+
+
+     
+     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/custom.css" />
+
+
+
+
+
+
     </head>
     <body>
+
+                
+        <!-- header Start -->
+        {{ include('/BDboom/header.html.twig') }}  
+        <!-- header End -->
+
         {% block body %}{% endblock %}
+
+         <!-- footer Start -->
+        {{ include('/BDboom/footer.html.twig') }}  
+        <!-- footer End -->
     </body>
 </html>
