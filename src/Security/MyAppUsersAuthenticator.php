@@ -46,8 +46,8 @@ class MyAppUsersAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_user_index'));
+        // on renvoie vers la home du site
+        return new RedirectResponse($this->urlGenerator->generate('app_BDboom_index'));
         // throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 

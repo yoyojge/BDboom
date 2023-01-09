@@ -23,12 +23,24 @@
                    
                   
                   </div>
-                  <div>
-                    <a href="#" class="nav-link disabled">Se connecter</a>
-                  </div>
-                  <div>
-                    <a href="#" class="nav-link disabled">S'inscrire</a>
-                  </div>
+
+
+                  {% if app.user %}
+                      <div>
+                          You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                      </div>
+                  {% else %}
+                    <div>
+                      <a href="{{ path('app_login') }}" class="nav-link">Se connecter</a>
+                    </div>
+                    <div>
+                      <a href="#" class="nav-link disabled">S'inscrire</a>
+                    </div>
+                  {% endif %}
+
+
+
+                  
                 
             </div>            
                
