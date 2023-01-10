@@ -33,5 +33,12 @@ class BDboomController extends AbstractController
         ]);
     }
 
+
+    #[Route('/miaou', name: 'app_BDboom_miaou', methods: ['GET'])]
+    public function miaou()
+    {            
+        return $this->render('BDboom/miaou.html.twig', []);
+    }
+
     
 }
