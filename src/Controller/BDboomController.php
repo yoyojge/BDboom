@@ -20,9 +20,9 @@ class BDboomController extends AbstractController
     {
         
           
-        $tabActu = $BDboomRepository->RSS('https://bdboom.fr/blog/category/actu/feed/' );
-        $tabBleu = $BDboomRepository->RSS('https://bdboom.fr/blog/category/bleucomme/feed/' );
-        $tabBoom = $BDboomRepository->RSS('https://bdboom.fr/blog/category/quifaitboom/feed/' );
+        $tabActu = $BDboomRepository->RSS('https://blog.bdboom.fr/category/actu/feed/' );
+        $tabBleu = $BDboomRepository->RSS('https://blog.bdboom.fr/category/bleucomme/feed/' );
+        $tabBoom = $BDboomRepository->RSS('https://blog.bdboom.fr/category/quifaitboom/feed/' );
          
         // dd($tabBleu);
         
