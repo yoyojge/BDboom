@@ -13,6 +13,7 @@ $nav-link-font-weight: bold;
 @import "/node_modules/bootstrap/scss/bootstrap.scss";
 
 
+//footer width bug fix
 .container, .container-sm, .container-md, .container-lg {
     max-width: 970px;
 }
