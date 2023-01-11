@@ -8,7 +8,14 @@ $navbar-light-disabled-color : #adb5bd;
 $nav-link-color : #FFFFFF;
 $nav-link-font-weight: bold;
 
+
+
 @import "/node_modules/bootstrap/scss/bootstrap.scss";
+
+
+.container, .container-sm, .container-md, .container-lg {
+    max-width: 970px;
+}
 
 
 .navbar-toggler {
@@ -103,7 +110,7 @@ header,nav, main, footer{
 
 
 
-
+//MIAOU
 
 $size: 170px; // (Fully responsive)
 $color-black: #161616;
@@ -295,28 +302,7 @@ $color-white: #fff;
 }
 
 
-
-
-// $bdbnav: (
-//   height:150px,
-// );
-
-
-// .bdbnav {
-    //   @each $property, $value in $bdbnav {
-        //     #{$property}: $value;
-        //   }
-        // }
-        
-        // @function bdbnav($key) {
-            //   @return map-get($bdbnav, $key);
-            // }
-            
-            
-            // main{
-                //   margin-top: bdbnav(height);
-                // }
-                
+//fin MIAOU
                 
                 
                 
