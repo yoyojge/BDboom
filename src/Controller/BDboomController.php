@@ -15,6 +15,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[Route('/')]
 class BDboomController extends AbstractController
 {
+    
+    
+    // index du site
     #[Route('/', name: 'app_BDboom_index', methods: ['GET'])]
     public function index(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
     {
@@ -34,6 +37,34 @@ class BDboomController extends AbstractController
     }
 
 
+    // page de resultat apres formulaire de recherche du header
+    #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['POST'])]
+    public function listeResultat(UserRepository $userRepository, BDboomRepository $BDboomRepository, Request $request): Response
+    {
+        $bdsearch =$request->get('bdsearch');
+        // dd($bdsearch);
+        
+        return $this->render('BDboom/listeResultat.html.twig', [
+            
+        ]);
+    }
+
+    // page BDtheque
+    #[Route('/BDtheque', name: 'app_BDboom_BDtheque', methods: ['GET'])]
+    public function BDtheque(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
+    {
+        
+        // dd($tabBleu);
+        
+        return $this->render('BDboom/BDtheque.html.twig', [
+            
+        ]);
+    }
+
+
+
+
+    // test chat en scss
     #[Route('/miaou', name: 'app_BDboom_miaou', methods: ['GET'])]
     public function miaou()
     {            
@@ -64,6 +95,31 @@ class BDboomController extends AbstractController
         return $this->renderForm('BDboom/inscription.html.twig', [
             'user' => $user,
             'form' => $form,
+        ]);
+    }
+
+
+    // page RCPU
+    #[Route('/rcpu', name: 'app_BDboom_rcpu', methods: ['GET'])]
+    public function rcpu(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
+    {
+        
+        // dd($tabBleu);
+        
+        return $this->render('BDboom/rcpu.html.twig', [
+            
+        ]);
+    }
+
+    // page CUPU
+    #[Route('/cupu', name: 'app_BDboom_cupu', methods: ['GET'])]
+    public function cupu(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
+    {
+        
+        // dd($tabBleu);
+        
+        return $this->render('BDboom/cupu.html.twig', [
+            
         ]);
     }
 

@@ -54,7 +54,7 @@
 
               <div class="col-10 col-sm-10 col-md-12 order-md-2 text-end">
                 
-                  <form action="list.php" method="post">
+                  <form action="{{ path('app_BDboom_listeResultat') }}" method="post">
                     <input type="text" id="bdsearch" name="bdsearch" style="width:75%;" placeholder="Retrouver une BD" />
                     <button>ok</button>
                   </form>
@@ -67,11 +67,11 @@
                 <ul class="navbar-nav me-auto mb-2 mb-md-0 col-md-12 justify-content-md-evenly">
                   
                   <li class="nav-item">
-                    <a class="nav-link " href="https://bdboom.fr/blog/">BLOG</a>
+                    <a class="nav-link " href="https://blog.bdboom.fr">BLOG</a>
                   </li> 
 
                   <li class="nav-item">
-                    <a class="nav-link  disabled" title="En cours de développement">Mes BDtheques</a>
+                    <a href="{{ path('app_BDboom_BDtheque') }}"   class="nav-link   {% if not app.user %} disabled  {% endif %}" title="Mes BDtheques">Mes BDtheques</a>
                   </li> 
                                  
                 </ul>
