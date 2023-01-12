@@ -42,6 +42,7 @@
         "symfony/web-link": "6.2.*",
         "symfony/webpack-encore-bundle": "^1.16",
         "symfony/yaml": "6.2.*",
+        "ten7/amazon-paapi5-php-sdk": "^1.0@alpha",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },

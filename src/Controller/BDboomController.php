@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Repository\BDboomRepository;
+use App\Repository\BDboomAPIsearchRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,13 +40,16 @@ class BDboomController extends AbstractController
 
     // page de resultat apres formulaire de recherche du header
     #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['POST'])]
-    public function listeResultat(UserRepository $userRepository, BDboomRepository $BDboomRepository, Request $request): Response
+    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request): Response
     {
         $bdsearch =$request->get('bdsearch');
         // dd($bdsearch);
+        $retourAmazon = $BDboomAPIsearchRepository->APIsearch($bdsearch);
         
+        dd($retourAmazon);
+
         return $this->render('BDboom/listeResultat.html.twig', [
-            
+            'retourAmazon' => $retourAmazon,
         ]);
     }
 
