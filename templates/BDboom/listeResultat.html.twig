@@ -8,14 +8,18 @@
 
 
 <main>
-
-    
-
     
 
     <div id="myCarouselInner" >
 
-        page de resultat
+        {% for item in listItems %}
+            {{ item.detailPageURL }}<br />
+            {{ item.itemInfo.title.displayValue }}<br />
+            <img src="{{ item.images.primary.medium.uRl }}" /><br /><br />
+
+        {% else %}
+            no records found
+        {% endfor %}
     </div>
 
 </main>
