@@ -6,6 +6,7 @@
 parameters:
     app.amazonaccesskey: '%env(APP_AMAZONACCESSKEY)%'
     app.amazonsecretkey: '%env(APP_AMAZONSECRETKEY)%'
+    app.googleapikey:   '%env(APP_GGBOOKAPIKEY)%'
 services:
     # default configuration for services in *this* file
     _defaults:

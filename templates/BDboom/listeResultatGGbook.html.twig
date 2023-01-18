@@ -1,0 +1,52 @@
+<div>Google Book</div>
+<div class="container-fluid bg-trasparent my-4 p-3" style="position: relative;">             
+    <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3"> 
+        {% for item in listItemsGGbook %}
+            {# {{ dump( item.volumeInfo) }} #}
+
+        <div class="col"> 
+            <div class="card h-100 shadow-sm"> 
+                {% if item.volumeInfo.imageLinks is defined %}
+                <img src="{{ item.volumeInfo.imageLinks.thumbnail }}" class="card-img-top" alt="{{ item.volumeInfo.title }}"> 
+                {% else %}
+                <img src="/images/default01.gif" class="card-img-top" alt="{{ item.volumeInfo.title }}">
+                {% endif %}
+
+                <div class="card-body"> 
+                    
+                    <div class="clearfix mb-3"> 
+                        <span class="float-start badge rounded-pill bg-primary">{{ item.volumeInfo.title }}</span> 
+                    </div>
+                    
+                    <h5 class="card-title">
+                        {% if item.volumeInfo.imageLinks is defined %}
+                            {{ item.volumeInfo.description | striptags | slice(0, 70) }}   <br />[...]                       
+                        {% endif %}
+                    </h5> 
+                   
+
+                    <div class="text-center my-4"> 
+                        <a href=" {{ path('app_BDboom_detail' , {'productGGbook': loop.index}) }}" class="btn btn-warning">Voir le détail</a> 
+                    </div> 
+
+                    <div class="text-center my-4"> 
+                        <a href=" " class="btn btn-warning">Ajouter à ma collection</a> 
+                    </div> 
+
+                    <div class="text-center my-4"> 
+                        <a href=" " class="btn btn-warning">Ajouter à ma wishlist</a> 
+                    </div> 
+
+                    <div class="text-center my-4"> 
+                        <a href=" " class="btn btn-warning">Acheter sur Amazon</a> 
+                    </div> 
+
+                </div> 
+            </div> 
+        </div> 
+        {% else %}
+            <div>no records found</div>
+        {% endfor %}
+    </div>
+</div>
+

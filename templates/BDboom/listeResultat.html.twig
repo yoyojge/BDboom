@@ -3,23 +3,16 @@
 {% block title %}Welcome BDboom{% endblock %}
 
 {% block body %}
-    
-    
+  
 
-
-<main>
-    
+<main>    
 
     <div id="myCarouselInner" >
+    
+        {{ include('/BDboom/listeResultatAmazon.html.twig') }}  
 
-        {% for item in listItems %}
-            {{ item.detailPageURL }}<br />
-            {{ item.itemInfo.title.displayValue }}<br />
-            <img src="{{ item.images.primary.medium.uRl }}" /><br /><br />
+        {{ include('/BDboom/listeResultatGGbook.html.twig') }}         
 
-        {% else %}
-            no records found
-        {% endfor %}
     </div>
 
 </main>

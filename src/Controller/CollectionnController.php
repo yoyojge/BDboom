@@ -21,6 +21,10 @@ class CollectionnController extends AbstractController
         ]);
     }
 
+
+
+
+    //ajouter une collection a un user
     #[Route('/new', name: 'app_collectionn_new', methods: ['GET', 'POST'])]
     public function new(Request $request, CollectionnRepository $collectionnRepository): Response
     {
@@ -29,9 +33,19 @@ class CollectionnController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+            //on definit le user associé et connecté a la collection
+            $user = $this->getUser();
+            $collectionn ->setCollector($user);
+
+
             $collectionnRepository->save($collectionn, true);
 
-            return $this->redirectToRoute('app_collectionn_index', [], Response::HTTP_SEE_OTHER);
+            //ajout d'un message flash
+            $this->addFlash('collectionAjout', 'Bravo, Votre collection a été ajoutée');
+
+            return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('collectionn/new.html.twig', [

@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome BDboom{% endblock %}
+
+{% block body %}
+    
+    
+
+
+<main>
+<div id="myCarouselInner" >
+        
+    <div class="container py-4 my-4 mx-auto d-flex flex-column">
+        <div class="header">
+            <div class="row r1">
+                <div class="col-md-9 abc">
+
+                    {# si amazon #}
+                    {% if from == "amazon" %}
+                    <h1>{{ item.itemInfo.title.displayValue }}</h1>
+                    {% endif %}
+                    {# si ggbook #}
+                    {% if from == "ggbook" %}
+                    <h1>{{ item.volumeInfo.title }}</h1>
+                    {% endif %}
+
+
+
+
+
+                </div>
+                <div class="col-md-3 text-right pqr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                <p class="text-right para">Based on 250 Review</p>
+            </div>
+        </div>
+
+
+        {# si amazon #}
+        {% if from == "amazon" %}
+        <div class="container-body mt-4">
+            <div class="row r3">
+                
+                <div class="col-md-7"> 
+                    <img src="{{ item.images.primary.medium.uRl }}" alt="{{ item.itemInfo.title.displayValue }}" width="90%" height="95%"> 
+                </div>
+                
+                <div class="col-md-5 p-0 klo">
+                    <ul>
+                        <li>{{ item.itemInfo.title.displayValue }}</li>
+                        <li>{{ item.itemInfo.byLineInfo.contributors[0].name }}</li>
+                        {% if item.itemInfo.externalIds.iSBNs is not null or item.itemInfo.externalIds.iSBNs is not empty %}
+                        <li>{{ item.itemInfo.externalIds.iSBNs.displayValues[0] }}</li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="mb-2"><a href="{{ path('app_BDboom_addItemToCollection') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma collection</a></div>
+                    <div class="mb-2"><a href="#"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a></div>
+                    <div class="myt ">
+                        <button type="button" class="btn btn-outline-warning"><a href="{{ item.detailPageURL }}">Acheter sur Amazon {{ item.offers.listings[0].price.displayAmount }}</a></button>
+                    </div>  
+
+
+                </div>
+                             
+            </div>
+           
+        </div>
+        {% endif %}
+        {# fin amazon #}
+
+
+        {# si GGbook #}
+         {% if from == "ggbook" %}
+        <div class="container-body mt-4">
+            <div class="row r3">
+                
+                <div class="col-md-7"> 
+                    {% if item.volumeInfo.imageLinks is defined %}
+                    <img src="{{ item.volumeInfo.imageLinks.thumbnail }}" class="card-img-top" alt="{{ item.volumeInfo.title }}" width="30%" height="auto"> 
+                    {% else %}
+                    <img src="/images/default01.gif" class="card-img-top" alt="{{ item.volumeInfo.title }}">
+                    {% endif %}
+                </div>
+                               
+                <div class="col-md-5 p-0 klo">
+                    <ul>
+                        <li>{{ item.volumeInfo.title }}</li>
+                        <li>{{ item.volumeInfo.authors[0] }}</li>
+                         {% if item.volumeInfo.imageLinks is defined %}
+                        <li>                       
+                            {{ item.volumeInfo.description | striptags  }}                 
+                        </li>
+                        {% endif %}
+                        {% if item.volumeInfo.industryIdentifiers[0] is not null or item.volumeInfo.industryIdentifiers[0] is not empty %}
+                        <li>{{ item.volumeInfo.industryIdentifiers[0].identifier }}</li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="mb-2">
+                        <a href="{{ path('app_BDboom_addItemToCollection') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma collection</a>
+                    </div>
+                    <div class="mb-2">
+                        <a href="#"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
+                    </div>
+                    
+
+
+                </div>
+                             
+            </div>
+           
+        </div>
+        {% endif %}
+        {# fin GGbook #}
+
+        
+    </div>
+
+</div>    
+</main>
+
+
+
+    
+{% endblock %}

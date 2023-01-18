@@ -7,6 +7,8 @@ use Amazon\ProductAdvertisingAPI\v1\Configuration;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\PartnerType;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\api\DefaultApi;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\GetItemsRequest;
+use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\GetItemsResource;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\SearchItemsRequest;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\SearchItemsResource;
 use Amazon\ProductAdvertisingAPI\v1\com\amazon\paapi5\v1\ProductAdvertisingAPIClientException;
@@ -47,7 +49,7 @@ class BDboomAPIsearchRepository  extends AbstractController
         $searchIndex = "Books";
 
         # Specify item count to be returned in search result
-        $itemCount = 10;
+        $itemCount = 9;
 
         /*
         * Choose resources you want from SearchItemsResource enum
@@ -74,12 +76,14 @@ class BDboomAPIsearchRepository  extends AbstractController
             SearchItemsResource::ITEM_INFOPRODUCT_INFO,
             SearchItemsResource::ITEM_INFOBY_LINE_INFO,
 
-            // SearchItemsResource::ITEM_INFOCONTENT_INFO,
-            // SearchItemsResource::ITEM_INFOCONTENT_RATING,
-            // SearchItemsResource::ITEM_INFOCLASSIFICATIONS,
-            // SearchItemsResource::ITEM_INFOMANUFACTURE_INFO,
-            // SearchItemsResource::ITEM_INFOTECHNICAL_INFO,
-            // SearchItemsResource::ITEM_INFOTRADE_IN_INFO,
+            SearchItemsResource::ITEM_INFOCONTENT_INFO,
+            SearchItemsResource::ITEM_INFOCONTENT_RATING,
+            SearchItemsResource::ITEM_INFOCLASSIFICATIONS,
+            SearchItemsResource::ITEM_INFOMANUFACTURE_INFO,
+            SearchItemsResource::ITEM_INFOTECHNICAL_INFO,
+            SearchItemsResource::ITEM_INFOTRADE_IN_INFO,
+
+            SearchItemsResource::ITEM_INFOTRADE_IN_INFO,
     
         
         ];
@@ -118,12 +122,12 @@ class BDboomAPIsearchRepository  extends AbstractController
             //     echo 'Printing first item information in SearchResult:';
             //     $item = $searchItemsResponse->getSearchResult()->getItems()[0];
             //     if ($item !== null) {
-            //         // if ($item->getASIN() !== null) {
-            //         //     echo "ASIN: ", $item->getASIN(), PHP_EOL;
-            //         // }
-            //         // if ($item->getDetailPageURL() !== null) {
-            //         //     echo "DetailPageURL: ", $item->getDetailPageURL();
-            //         // }
+            //         if ($item->getASIN() !== null) {
+            //             echo "ASIN: ", $item->getASIN(), PHP_EOL;
+            //         }
+            //         if ($item->getDetailPageURL() !== null) {
+            //             echo "DetailPageURL: ", $item->getDetailPageURL();
+            //         }
             //         if ($item->getItemInfo() !== null
             //             and $item->getItemInfo()->getTitle() !== null
             //             and $item->getItemInfo()->getTitle()->getDisplayValue() !== null) {
@@ -142,31 +146,176 @@ class BDboomAPIsearchRepository  extends AbstractController
             //     }
             // }
             if ($searchItemsResponse->getErrors() !== null) {
-                echo PHP_EOL, 'Printing Errors:', PHP_EOL, 'Printing first error object from list of errors', PHP_EOL;
-                echo 'Error code: ', $searchItemsResponse->getErrors()[0]->getCode(), PHP_EOL;
-                echo 'Error message: ', $searchItemsResponse->getErrors()[0]->getMessage(), PHP_EOL;
+                // echo PHP_EOL, 'Printing Errors:', PHP_EOL, 'Printing first error object from list of errors', PHP_EOL;
+                // echo 'Error code: ', $searchItemsResponse->getErrors()[0]->getCode(), PHP_EOL;
+                // echo 'Error message: ', $searchItemsResponse->getErrors()[0]->getMessage(), PHP_EOL;
             }
         } catch (ApiException $exception) {
-            echo "Error calling PA-API 5.0!", PHP_EOL;
-            echo "HTTP Status Code: ", $exception->getCode(), PHP_EOL;
-            echo "Error Message: ", $exception->getMessage(), PHP_EOL;
-            if ($exception->getResponseObject() instanceof ProductAdvertisingAPIClientException) {
-                $errors = $exception->getResponseObject()->getErrors();
-                foreach ($errors as $error) {
-                    echo "Error Type: ", $error->getCode(), PHP_EOL;
-                    echo "Error Message: ", $error->getMessage(), PHP_EOL;
-                }
-            } else {
-                echo "Error response body: ", $exception->getResponseBody(), PHP_EOL;
-            }
+            // echo "Error calling PA-API 5.0!", PHP_EOL;
+            // echo "HTTP Status Code: ", $exception->getCode(), PHP_EOL;
+            // echo "Error Message: ", $exception->getMessage(), PHP_EOL;
+            // if ($exception->getResponseObject() instanceof ProductAdvertisingAPIClientException) {
+            //     $errors = $exception->getResponseObject()->getErrors();
+            //     foreach ($errors as $error) {
+            //         echo "Error Type: ", $error->getCode(), PHP_EOL;
+            //         echo "Error Message: ", $error->getMessage(), PHP_EOL;
+            //     }
+            // } else {
+            //     echo "Error response body: ", $exception->getResponseBody(), PHP_EOL;
+            // }
         } catch (Exception $exception) {
-            echo "Error Message: ", $exception->getMessage(), PHP_EOL;
+            // echo "Error Message: ", $exception->getMessage(), PHP_EOL;
         }
 
-        return $searchItemsResponse;
+
+        if(!empty($searchItemsResponse)){
+            $listItems = $searchItemsResponse['searchResult']['items'];
+        }
+        else{
+            $listItems = [];
+        }
+
+        // dd( $listItems);
+
+        return $listItems;
         // return $keyword;
 
     }
+
+
+
+
+
+
+
+
+
+    //fonction utilisée dans la fonction DetailAmazonProduct
+    public function parseResponse($items)
+    {
+        $mappedResponse = [];
+        foreach ($items as $item) {
+            $mappedResponse[$item->getASIN()] = $item;
+        }
+        return $mappedResponse;
+    }
+
+
+    public function DetailAmazonProduct($itemIds)
+    { 
+        
+        
+        $config = new Configuration();
+
+        $config->setAccessKey( $this->getParameter('app.amazonaccesskey') );
+        $config->setSecretKey( $this->getParameter('app.amazonsecretkey') );
+        $partnerTag = 'bdboom04-21';
+
+        $config->setHost('webservices.amazon.com');
+        $config->setRegion('eu-west-1');
+
+        $apiInstance = new DefaultApi(
+            new \GuzzleHttp\Client(),
+            $config
+        );
+
+    # Request initialization
+
+    # Choose item id(s)
+    // $itemIds = ["2017168769"];
+
+    $resources = [
+        GetItemsResource::ITEM_INFOTITLE,
+        GetItemsResource::OFFERSLISTINGSPRICE,
+        GetItemsResource::ITEM_INFOFEATURES,
+    ];
+
+    # Forming the request
+    $getItemsRequest = new GetItemsRequest();
+    $getItemsRequest->setItemIds($itemIds);
+    $getItemsRequest->setPartnerTag($partnerTag);
+    $getItemsRequest->setPartnerType(PartnerType::ASSOCIATES);
+    $getItemsRequest->setResources($resources);
+
+    # Validating request
+    $invalidPropertyList = $getItemsRequest->listInvalidProperties();
+    $length = count($invalidPropertyList);
+    if ($length > 0) {
+        echo "Error forming the request", PHP_EOL;
+        foreach ($invalidPropertyList as $invalidProperty) {
+            echo $invalidProperty, PHP_EOL;
+        }
+        return;
+    }
+
+    # Sending the request
+    try {
+        $getItemsResponse = $apiInstance->getItems($getItemsRequest);
+
+        // echo 'API called successfully', PHP_EOL;
+        // echo 'Complete Response: ', $getItemsResponse, PHP_EOL;
+
+        # Parsing the response
+        if ($getItemsResponse->getItemsResult() !== null) {
+            echo 'Printing all item information in ItemsResult:', PHP_EOL;
+            if ($getItemsResponse->getItemsResult()->getItems() !== null) {
+                $responseList = parseResponse($getItemsResponse->getItemsResult()->getItems());
+
+                foreach ($itemIds as $itemId) {
+                    echo 'Printing information about the itemId: ', $itemId, PHP_EOL;
+                    $item = $responseList[$itemId];
+                    if ($item !== null) {
+                        if ($item->getASIN()) {
+                            echo 'ASIN: ', $item->getASIN(), PHP_EOL;
+                        }
+                        if ($item->getItemInfo() !== null and $item->getItemInfo()->getTitle() !== null
+                            and $item->getItemInfo()->getTitle()->getDisplayValue() !== null) {
+                            echo 'Title: ', $item->getItemInfo()->getTitle()->getDisplayValue(), PHP_EOL;
+                        }
+                        if ($item->getDetailPageURL() !== null) {
+                            echo 'Detail Page URL: ', $item->getDetailPageURL(), PHP_EOL;
+                        }
+                        if ($item->getOffers() !== null and
+                            $item->getOffers()->getListings() !== null
+                            and $item->getOffers()->getListings()[0]->getPrice() !== null
+                            and $item->getOffers()->getListings()[0]->getPrice()->getDisplayAmount() !== null) {
+                            echo 'Buying price: ', $item->getOffers()->getListings()[0]->getPrice()
+                                ->getDisplayAmount(), PHP_EOL;
+                        }
+                    } else {
+                        echo "Item not found, check errors", PHP_EOL;
+                    }
+                }
+            }
+        }
+        if ($getItemsResponse->getErrors() !== null) {
+            echo PHP_EOL, 'Printing Errors:', PHP_EOL, 'Printing first error object from list of errors', PHP_EOL;
+            echo 'Error code: ', $getItemsResponse->getErrors()[0]->getCode(), PHP_EOL;
+            echo 'Error message: ', $getItemsResponse->getErrors()[0]->getMessage(), PHP_EOL;
+        }
+    } catch (ApiException $exception) {
+        echo "Error calling PA-API 5.0!", PHP_EOL;
+        echo "HTTP Status Code: ", $exception->getCode(), PHP_EOL;
+        echo "Error Message: ", $exception->getMessage(), PHP_EOL;
+        if ($exception->getResponseObject() instanceof ProductAdvertisingAPIClientException) {
+            $errors = $exception->getResponseObject()->getErrors();
+            foreach ($errors as $error) {
+                echo "Error Type: ", $error->getCode(), PHP_EOL;
+                echo "Error Message: ", $error->getMessage(), PHP_EOL;
+            }
+        } else {
+            echo "Error response body: ", $exception->getResponseBody(), PHP_EOL;
+        }
+    } catch (Exception $exception) {
+        echo "Error Message: ", $exception->getMessage(), PHP_EOL;
+    }
+
+        dd('coucou');
+
+        return $url;
+    }
+
+
 
 
 

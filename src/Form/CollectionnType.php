@@ -13,7 +13,7 @@ class CollectionnType extends AbstractType
     {
         $builder
             ->add('CollectionName')
-            ->add('collector')
+            // ->add('collector')
         ;
     }
 
