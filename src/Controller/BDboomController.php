@@ -5,15 +5,18 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Album;
 use App\Form\UserType;
+use App\Entity\Wishlist;
+use App\Entity\Collectionn;
 use App\Entity\AlbumCollection;
 use App\Repository\UserRepository;
 use App\Repository\AlbumRepository;
 use App\Repository\BDboomRepository;
+use App\Repository\WishlistRepository;
 use App\Repository\CollectionnRepository;
+
 use App\Repository\AlbumCollectionRepository;
 use App\Repository\BDboomAPIsearchRepository;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -260,7 +263,7 @@ class BDboomController extends AbstractController
                 
         
 
-        //TODO:on enregistre le livre dans la collection du user
+        //on enregistre le livre dans la collection du user
         //recuperer l'id de la collection
         $albumCollection = new AlbumCollection;
         
@@ -338,8 +341,13 @@ class BDboomController extends AbstractController
         return $this->render('BDboom/miaou.html.twig', []);
     }
 
+
+
+
+
+    //inscription
     #[Route('/inscription', name: 'app_BDboom_inscription', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository,  UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, UserRepository $userRepository,  UserPasswordHasherInterface $passwordHasher, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -352,9 +360,30 @@ class BDboomController extends AbstractController
 
             //on ashe le mot de passe
             $password = $passwordHasher->hashPassword($user, $request->get('user')['password']);
-            $user->setPassword ($password);
+            $user->setPassword ($password);            
+            $userRepository->save($user, true);     
             
-            $userRepository->save($user, true);            
+            //creer et associer une collection
+            //on definit le user associé et connecté a la collection
+            $collectionn = new Collectionn();
+            $idNewUser = $user->getId ();
+            $userObj = $userRepository->findBy( array('id' => $idNewUser ));
+            $collectionn->setCollector($userObj[0]);
+            $collectionn->setCollectionName("Ma collection");
+            $collectionnRepository->save($collectionn, true);
+
+            //TODO: creer et associer une wishlist
+            $wishlist = new Wishlist();
+            $wishlist->setCollector($userObj[0]);
+            $wishlist->setWishlistName("Ma wishlist");
+            $wishlistRepository->save($wishlist, true);
+
+
+
+            //TODO: ajouter la gestion de la creation de compte par mail de conf + token
+
+            //ajout d'un message flash
+            $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé');
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }

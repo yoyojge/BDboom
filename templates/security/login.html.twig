@@ -11,7 +11,12 @@
         <div class="container marketing">        
             <div class="row">
             
-            
+ {#  message flash collection ajoutée #}
+{% for message in app.flashes('compteAjout') %}
+<div class="alert alert-success" role="alert">
+    {{ message }}
+</div>
+{% endfor %}           
 
 
 <form method="post">

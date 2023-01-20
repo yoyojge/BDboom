@@ -12,11 +12,11 @@
         
 
     {#  message flash collection ajoutée #}
-        {% for message in app.flashes('albumAjout') %}
-        <div class="alert alert-success" role="alert">
-            {{ message }}
-        </div>
-        {% endfor %}
+    {% for message in app.flashes('albumAjout') %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
 
 
     <div class="container py-4 my-4 mx-auto d-flex flex-column">
