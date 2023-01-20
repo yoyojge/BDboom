@@ -32,6 +32,21 @@ class Album
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $isbn = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $serie = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $origine = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $keyword = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $author = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $BDboomDate = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +120,66 @@ class Album
     public function setIsbn(?string $isbn): self
     {
         $this->isbn = $isbn;
+
+        return $this;
+    }
+
+    public function getSerie(): ?string
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?string $serie): self
+    {
+        $this->serie = $serie;
+
+        return $this;
+    }
+
+    public function getOrigine(): ?string
+    {
+        return $this->origine;
+    }
+
+    public function setOrigine(?string $origine): self
+    {
+        $this->origine = $origine;
+
+        return $this;
+    }
+
+    public function getKeyword(): ?string
+    {
+        return $this->keyword;
+    }
+
+    public function setKeyword(?string $keyword): self
+    {
+        $this->keyword = $keyword;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getBDboomDate(): ?\DateTimeInterface
+    {
+        return $this->BDboomDate;
+    }
+
+    public function setBDboomDate(?\DateTimeInterface $BDboomDate): self
+    {
+        $this->BDboomDate = $BDboomDate;
 
         return $this;
     }

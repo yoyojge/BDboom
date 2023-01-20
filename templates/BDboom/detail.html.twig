@@ -10,6 +10,15 @@
 <main>
 <div id="myCarouselInner" >
         
+
+    {#  message flash collection ajoutée #}
+        {% for message in app.flashes('albumAjout') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+
+
     <div class="container py-4 my-4 mx-auto d-flex flex-column">
         <div class="header">
             <div class="row r1">
@@ -23,10 +32,6 @@
                     {% if from == "ggbook" %}
                     <h1>{{ item.volumeInfo.title }}</h1>
                     {% endif %}
-
-
-
-
 
                 </div>
                 <div class="col-md-3 text-right pqr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
@@ -96,13 +101,27 @@
                         {% endif %}
                     </ul>
 
+                    {% if app.user %}
                     <div class="mb-2">
-                        <a href="{{ path('app_BDboom_addItemToCollection') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma collection</a>
+                        {# <a href=""  {% if not app.user %} disabled  {% endif %}> #}
+                           
+                            <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
+
+                                <button type="submit"> Ajouter à ma collection</button>
+                                <select name="collectionn" id="collectionn">
+                                {% for collectionn in collectionns %}
+                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                                {% endfor %}
+                                </select>
+                            </form>
+
+                        {# </a> #}
                     </div>
+                    
                     <div class="mb-2">
                         <a href="#"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
                     </div>
-                    
+                    {% endif %}
 
 
                 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+
+
 // use App\Entity\Album;
 // use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 // use Doctrine\Persistence\ManagerRegistry;
@@ -61,6 +63,27 @@ class BDboomRepository
 
         return $tabRss;
         
+
+    }
+
+
+
+
+    function imageLoad($imagePath){
+
+        preg_match_all('/\bhttps?:\/\/\S+(?:png|jpg)\b/', $imagePath, $matches);
+        $unique = uniqid();
+
+        if(!empty($matches[0])){
+            $img = '../public/images/book/'. $unique.''.$matches[0];
+        } 
+        else{
+            $img = '../public/images/book/'.$unique.'.png';
+        }       
+        
+        // Enregistrer l'image
+        file_put_contents($img, file_get_contents($imagePath));
+        return $img;
 
     }
 

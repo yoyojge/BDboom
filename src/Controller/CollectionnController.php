@@ -16,6 +16,9 @@ class CollectionnController extends AbstractController
     #[Route('/', name: 'app_collectionn_index', methods: ['GET'])]
     public function index(CollectionnRepository $collectionnRepository): Response
     {
+        
+        //TODO: ne remonter que les collections du user connecté
+        
         return $this->render('collectionn/index.html.twig', [
             'collectionns' => $collectionnRepository->findAll(),
         ]);
@@ -39,7 +42,6 @@ class CollectionnController extends AbstractController
             $user = $this->getUser();
             $collectionn ->setCollector($user);
 
-
             $collectionnRepository->save($collectionn, true);
 
             //ajout d'un message flash
@@ -54,6 +56,11 @@ class CollectionnController extends AbstractController
         ]);
     }
 
+
+
+
+
+
     #[Route('/{id}', name: 'app_collectionn_show', methods: ['GET'])]
     public function show(Collectionn $collectionn): Response
     {
@@ -61,6 +68,11 @@ class CollectionnController extends AbstractController
             'collectionn' => $collectionn,
         ]);
     }
+
+
+
+
+
 
     #[Route('/{id}/edit', name: 'app_collectionn_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Collectionn $collectionn, CollectionnRepository $collectionnRepository): Response
@@ -80,6 +92,11 @@ class CollectionnController extends AbstractController
         ]);
     }
 
+
+
+
+
+
     #[Route('/{id}', name: 'app_collectionn_delete', methods: ['POST'])]
     public function delete(Request $request, Collectionn $collectionn, CollectionnRepository $collectionnRepository): Response
     {
@@ -89,4 +106,8 @@ class CollectionnController extends AbstractController
 
         return $this->redirectToRoute('app_collectionn_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+    
 }
