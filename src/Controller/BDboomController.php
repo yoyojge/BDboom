@@ -7,13 +7,15 @@ use App\Entity\Album;
 use App\Form\UserType;
 use App\Entity\Wishlist;
 use App\Entity\Collectionn;
+use App\Entity\AlbumWishlist;
 use App\Entity\AlbumCollection;
 use App\Repository\UserRepository;
 use App\Repository\AlbumRepository;
 use App\Repository\BDboomRepository;
 use App\Repository\WishlistRepository;
-use App\Repository\CollectionnRepository;
 
+use App\Repository\CollectionnRepository;
+use App\Repository\AlbumWishlistRepository;
 use App\Repository\AlbumCollectionRepository;
 use App\Repository\BDboomAPIsearchRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,8 +80,10 @@ class BDboomController extends AbstractController
         //TODO:recherche dans BDboom
 
 
+
         //recherche avec API amazon        
         $listItemsAmazon = $BDboomAPIsearchRepository->APIsearch($bdsearch);
+        // dd($listItemsAmazon);
         $this->session->set('sessSearchAmazon', $listItemsAmazon);
         
         //recherche avec API google book
@@ -169,83 +173,36 @@ class BDboomController extends AbstractController
          
         //recuperation des infos de recherche stockées en session
         $sessSearchDetail = $this->session->get('sessSearchDetail', []);
+        // dd($sessSearchDetail);
         $sessSearchDetailIndex = $this->session->get('sessSearchDetailIndex', []);   
-        
-        //si from BDboom
-        if($this->session->get('sessSearchFrom') == "BDboom"){
-            // $title = $sessSearchDetail['volumeInfo']['title'];
-            // $description = $sessSearchDetail['volumeInfo']['description'];
-        }
+        $sessSearchFrom = $this->session->get('sessSearchFrom');
 
-        //si from Amazon
-        if($this->session->get('sessSearchFrom') == "amazon"){
-            // $title = $sessSearchDetail['volumeInfo']['title'];
-            // $description = $sessSearchDetail['volumeInfo']['description'];
-        }
-
-
-        //si from GGbook
-        if($this->session->get('sessSearchFrom') == "ggbook"){
-            $title = $sessSearchDetail['volumeInfo']['title'];            
-            
-            //detail
-            if(!empty($sessSearchDetail['volumeInfo']['description'])){
-                $description = $sessSearchDetail['volumeInfo']['description'];
-            }
-            else{
-                $description = "no description";
-            }
-
-            //isbn
-            if(!empty($sessSearchDetail['volumeInfo']['industryIdentifiers'])){
-                $isbn = $sessSearchDetail['volumeInfo']['industryIdentifiers'][0]['identifier'];
-            }
-            else{
-                $isbn = "no isbn";
-            }
-
-            //image
-            if(!empty($sessSearchDetail['volumeInfo']['imageLinks'])){
-                $coverOnline = $sessSearchDetail['volumeInfo']['imageLinks']['thumbnail'];
-                //on enregistre l'image sur le serveur
-                $newPathCover = $BDboomRepository->imageLoad($coverOnline);
-            }
-            else{
-                $cover = "no cover";
-            }
-
-            //author
-            if(!empty($sessSearchDetail['volumeInfo']['authors'])){
-                $authors = $sessSearchDetail['volumeInfo']['authors'][0];                
-            }
-            else{
-                $authors = "";
-            }  
-
-            $refBDfugue = ""; 
-            $refAmazone = "";                        
-            
-        }
+        //fonction de gestion des infos du livres a inserer
+        $arrayBookInfo = $BDboomRepository->bookInfo($sessSearchDetail, $sessSearchFrom);
 
         //date
         $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
        
         
         //on verifie si le livre n'est pas deja en BDD ::  (recherche par isbn)
-        $trouve = $albumRepository->findBy( array('isbn' => $isbn ));
+        $trouve = $albumRepository->findBy( array('isbn' => $arrayBookInfo['isbn'] ));
         // dd($isbn, $trouve);       
         
         //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
         if(empty($trouve)){
+
+            //on enregistre l'image sur le serveur ::  que si pas deja existant
+            $newPathCover = $BDboomRepository->imageLoad($arrayBookInfo['coverOnline']);
+
             $album = new Album;
-            $album->setTitle($title);
-            $album->setCover($newPathCover.'.png');
-            $album->setDescription($description);
-            $album->setRefBDfugues($refBDfugue);
-            $album->setRefAmazon($refAmazone);
-            $album->setIsbn($isbn);
-            $album->setKeyword( $this->session->get('sessKeywordSearch')." ".$title );
-            $album->setAuthor($authors);
+            $album->setTitle($arrayBookInfo['title']);
+            $album->setCover($newPathCover);
+            $album->setDescription($arrayBookInfo['description']);
+            $album->setRefBDfugues($arrayBookInfo['refBDfugue']);
+            $album->setRefAmazon($arrayBookInfo['refAmazone']);
+            $album->setIsbn($arrayBookInfo['isbn']);
+            $album->setKeyword( $this->session->get('sessKeywordSearch')." ".$arrayBookInfo['title'] );
+            $album->setAuthor($arrayBookInfo['authors']);
             $album->setBDboomDate($Now);
             $album->setOrigine( $this->session->get('sessSearchFrom') );
 
@@ -253,7 +210,8 @@ class BDboomController extends AbstractController
             
             //recuperer l'id du nouveau livre
             $albumID = $album->getId();
-            // dd($album->getId());
+            // dd($album->getId());           
+
         }
         else{
              //recuperer l'id du livre deja en BDD
@@ -271,7 +229,6 @@ class BDboomController extends AbstractController
         // dd($request->request->all());
 
         $albumObj = $albumRepository->findBy( array('id' => $albumID ));
-        // dd($albumObj);
         $albumCollection->setAlbum( $albumObj[0]);
 
         $collectionObj = $collectionnRepository->findBy( array('id' => $collectionnIdSelected ));
@@ -296,6 +253,91 @@ class BDboomController extends AbstractController
 
 
 
+
+
+
+
+    // AJOUTER UN LIVRE A SA WISHLIST
+    #[Route('/addItemToWishlit', name: 'app_BDboom_addItemToWishlist', methods: ['GET', 'POST'])]
+    public function addItemToWishlist(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, AlbumWishlistRepository $albumWishlistRepository): Response
+    {
+         
+        //recuperation des infos de recherche stockées en session
+        $sessSearchDetail = $this->session->get('sessSearchDetail', []);
+        $sessSearchFrom = $this->session->get('sessSearchFrom');
+
+        //fonction de gestion des infos du livres a inserer
+        $arrayBookInfo = $BDboomRepository->bookInfo($sessSearchDetail, $sessSearchFrom);
+
+         //date
+         $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+       
+        
+         //on verifie si le livre n'est pas deja en BDD ::  (recherche par isbn)
+         $trouve = $albumRepository->findBy( array('isbn' => $arrayBookInfo['isbn'] ));
+         // dd($isbn, $trouve);       
+         
+         //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
+         if(empty($trouve)){
+ 
+             //on enregistre l'image sur le serveur ::  que si pas deja existant
+             $newPathCover = $BDboomRepository->imageLoad($arrayBookInfo['coverOnline']);
+ 
+             $album = new Album;
+             $album->setTitle($arrayBookInfo['title']);
+             $album->setCover($newPathCover);
+             $album->setDescription($arrayBookInfo['description']);
+             $album->setRefBDfugues($arrayBookInfo['refBDfugue']);
+             $album->setRefAmazon($arrayBookInfo['refAmazone']);
+             $album->setIsbn($arrayBookInfo['isbn']);
+             $album->setKeyword( $this->session->get('sessKeywordSearch')." ".$arrayBookInfo['title'] );
+             $album->setAuthor($arrayBookInfo['authors']);
+             $album->setBDboomDate($Now);
+             $album->setOrigine( $this->session->get('sessSearchFrom') );
+ 
+             $albumRepository->save($album, true);   
+             
+             //recuperer l'id du nouveau livre
+             $albumID = $album->getId();
+             // dd($album->getId());           
+ 
+         }
+         else{
+              //recuperer l'id du livre deja en BDD
+             $albumID = $trouve[0]->getId();
+             // dd($trouve[0]->getId()); 
+         }
+
+
+        //on retrouve l id de la wishlist du user connecte
+        $wishlist = new Wishlist;
+        $user = $this->getUser();        
+        $wishlistObj = $wishlistRepository->findBy( ['collector' =>  $user ]);
+        // dd($wishlistObj);
+
+        //on enregistre le livre dans la wishlist du user
+        
+        $albumWishlist = new AlbumWishlist;          
+
+        $albumObj = $albumRepository->findBy( array('id' => $albumID ));
+        $albumWishlist->setAlbum( $albumObj[0]);
+
+        // $collectionObj = $collectionnRepository->findBy( array('id' => $collectionnIdSelected ));
+        $albumWishlist->setWishlist($wishlistObj[0]);
+        
+        $albumWishlistRepository->save($albumWishlist, true);  
+
+        //ajout d'un message flash
+        $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre wishlist');
+
+        //on reste sur la meme page 
+        $previousUrl = $_SERVER['HTTP_REFERER'];
+        $splitUrl = explode("detail/", $previousUrl);
+        $myUrlParam = explode("/", $splitUrl[1]);
+        // dd($myUrlParam);
+        return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
+        
+    }
 
 
 

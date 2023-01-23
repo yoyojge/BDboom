@@ -46,7 +46,7 @@
             <div class="row r3">
                 
                 <div class="col-md-7"> 
-                    <img src="{{ item.images.primary.medium.uRl }}" alt="{{ item.itemInfo.title.displayValue }}" width="90%" height="95%"> 
+                    <img src="{{ item.images.primary.large.uRl }}" alt="{{ item.itemInfo.title.displayValue }}" width="90%" height="95%"> 
                 </div>
                 
                 <div class="col-md-5 p-0 klo">
@@ -58,8 +58,34 @@
                         {% endif %}
                     </ul>
 
-                    <div class="mb-2"><a href="{{ path('app_BDboom_addItemToCollection') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma collection</a></div>
-                    <div class="mb-2"><a href="#"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a></div>
+                    {% if app.user %}
+                    <div class="mb-2">
+                        {# <a href=""  {% if not app.user %} disabled  {% endif %}> #}
+                           
+                            <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
+
+                                <button type="submit"> Ajouter à ma collection</button>
+                                <select name="collectionn" id="collectionn">
+                                {% for collectionn in collectionns %}
+                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                                {% endfor %}
+                                </select>
+                            </form>
+
+                        {# </a> #}
+                    </div>
+                    
+                    <div class="mb-2">
+                        <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
+                    </div>
+                    {% endif %}
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     <div class="myt ">
                         <button type="button" class="btn btn-outline-warning"><a href="{{ item.detailPageURL }}">Acheter sur Amazon {{ item.offers.listings[0].price.displayAmount }}</a></button>
                     </div>  
@@ -119,7 +145,7 @@
                     </div>
                     
                     <div class="mb-2">
-                        <a href="#"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
+                        <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
                     </div>
                     {% endif %}
 

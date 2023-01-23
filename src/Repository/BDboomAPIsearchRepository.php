@@ -70,6 +70,7 @@ class BDboomAPIsearchRepository  extends AbstractController
         $resources = [
             SearchItemsResource::ITEM_INFOTITLE,
             SearchItemsResource::IMAGESPRIMARYMEDIUM,
+            SearchItemsResource::IMAGESPRIMARYLARGE,
             SearchItemsResource::OFFERSLISTINGSPRICE,
             SearchItemsResource::ITEM_INFOEXTERNAL_IDS,
             SearchItemsResource::ITEM_INFOFEATURES,

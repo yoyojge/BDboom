@@ -6,7 +6,7 @@
         {% for item in listItemsAmazon %}
         <div class="col"> 
             <div class="card h-100 shadow-sm"> 
-                <img src="{{ item.images.primary.medium.uRl }}" class="card-img-top" alt="..."> 
+                <img src="{{ item.images.primary.large.uRl }}" class="card-img-top" alt="{{ item.itemInfo.title.displayValue }}"> 
                 <div class="card-body"> 
                     
                     <div class="clearfix mb-3"> 
