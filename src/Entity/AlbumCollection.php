@@ -21,6 +21,17 @@ class AlbumCollection
     #[ORM\JoinColumn(nullable: false)]
     private ?Collectionn $collection = null;
 
+
+    //ajout johann 2023-01-23
+    public function __construct()
+    {
+        $this->Album = new ArrayCollection();
+
+    }
+
+
+
+
     public function getId(): ?int
     {
         return $this->id;

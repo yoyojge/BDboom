@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Album;
 use App\Entity\Collectionn;
 use App\Form\CollectionnType;
+use App\Entity\AlbumCollection;
+use App\Repository\AlbumRepository;
 use App\Repository\CollectionnRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\AlbumCollectionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/collectionn')]
 class CollectionnController extends AbstractController
@@ -62,10 +66,33 @@ class CollectionnController extends AbstractController
 
 
     #[Route('/{id}', name: 'app_collectionn_show', methods: ['GET'])]
-    public function show(Collectionn $collectionn): Response
+    public function show(Collectionn $collectionn, Request $request, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, AlbumCollection $albumCollection, AlbumRepository $albumRepository ): Response
     {
+        
+        //recuperation des elements de la route
+        $routeParams = $request->attributes->get('_route_params');
+        $CollectionId = $routeParams['id'];
+        $CollectionId = intVal($CollectionId);
+        // dd( gettype($CollectionId)  );  
+        $CollectionObj = $collectionnRepository->findBy([ 'id'=>$CollectionId] );
+        // dd($CollectionObj);
+
+        $ListeAlbumCollection = $albumCollectionRepository->findBy([ 'collection'=>$CollectionObj]);
+        // $ListeAlbumCollection = $albumCollectionRepository->findByCollectionId($CollectionId);
+        dd($ListeAlbumCollection);
+
+        $arrayAlbumsId = [];
+        foreach($ListeAlbumCollection as $valeur){     
+
+            $arrayAlbumsId[] = $valeur->album->getId();
+
+        }
+
+        
         return $this->render('collectionn/show.html.twig', [
             'collectionn' => $collectionn,
+            'ListeAlbumCollection' => $ListeAlbumCollection
+
         ]);
     }
 

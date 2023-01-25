@@ -47,6 +47,13 @@ class Album
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $BDboomDate = null;
 
+
+    //add johann 2023-01-25
+    // public function __toString() {
+    //     return $this->title;
+    // }
+
+
     public function getId(): ?int
     {
         return $this->id;

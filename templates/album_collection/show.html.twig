@@ -3,6 +3,12 @@
 {% block title %}AlbumCollection{% endblock %}
 
 {% block body %}
+
+<main>
+
+    
+
+    <div id="myCarousel">
     <h1>AlbumCollection</h1>
 
     <table class="table">
@@ -19,4 +25,8 @@
     <a href="{{ path('app_album_collection_edit', {'id': album_collection.id}) }}">edit</a>
 
     {{ include('album_collection/_delete_form.html.twig') }}
+
+
+    </div>
+</main>
 {% endblock %}

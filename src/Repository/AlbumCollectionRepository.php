@@ -39,6 +39,20 @@ class AlbumCollectionRepository extends ServiceEntityRepository
         }
     }
 
+
+    //test function custom pour recuperer details des livres d'une collection ::  ne semble pas fonctionner !!!
+    public function findByCollectionId($value): array
+   {
+       return $this->createQueryBuilder('a')
+           ->andWhere('a.id = :val')
+           ->setParameter('val', $value)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+
+
 //    /**
 //     * @return AlbumCollection[] Returns an array of AlbumCollection objects
 //     */

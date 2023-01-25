@@ -35,7 +35,7 @@
 
                 </div>
                 <div class="col-md-3 text-right pqr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                <p class="text-right para">Based on 250 Review</p>
+                {# <p class="text-right para">Based on 250 Review</p> #}
             </div>
         </div>
 
@@ -76,7 +76,11 @@
                     </div>
                     
                     <div class="mb-2">
-                        <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
+                        <form action="{{ path('app_BDboom_addItemToWishlist') }}" method="GET">
+                            <button type="submit"> Ajouter à ma wishist</button>
+                        </form>
+
+                        {# <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a> #}
                     </div>
                     {% endif %}
                     

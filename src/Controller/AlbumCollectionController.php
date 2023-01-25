@@ -40,6 +40,10 @@ class AlbumCollectionController extends AbstractController
         ]);
     }
 
+
+
+
+
     #[Route('/{id}', name: 'app_album_collection_show', methods: ['GET'])]
     public function show(AlbumCollection $albumCollection): Response
     {
@@ -47,6 +51,11 @@ class AlbumCollectionController extends AbstractController
             'album_collection' => $albumCollection,
         ]);
     }
+
+
+
+
+
 
     #[Route('/{id}/edit', name: 'app_album_collection_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, AlbumCollection $albumCollection, AlbumCollectionRepository $albumCollectionRepository): Response
@@ -66,7 +75,9 @@ class AlbumCollectionController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_album_collection_delete', methods: ['POST'])]
+
+    //modif route : conflit ???
+    #[Route('/{id}/delete', name: 'app_album_collection_delete', methods: ['POST'])]
     public function delete(Request $request, AlbumCollection $albumCollection, AlbumCollectionRepository $albumCollectionRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$albumCollection->getId(), $request->request->get('_token'))) {
