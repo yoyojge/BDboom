@@ -22,12 +22,12 @@ class Collectionn
     #[ORM\Column(length: 255)]
     private ?string $CollectionName = null;
 
-    #[ORM\OneToMany(mappedBy: 'collection', targetEntity: AlbumCollection::class, orphanRemoval: true)]
-    private Collection $albumCollections;
+    #[ORM\ManyToMany(targetEntity: Album::class, inversedBy: 'collectionns')]
+    private Collection $albums;
 
     public function __construct()
     {
-        $this->albumCollections = new ArrayCollection();
+        $this->albums = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,30 +60,27 @@ class Collectionn
     }
 
     /**
-     * @return Collection<int, AlbumCollection>
+     * @return Collection<int, Album>
      */
-    public function getAlbumCollections(): Collection
+    public function getAlbums(): Collection
     {
-        return $this->albumCollections;
+        return $this->albums;
     }
 
-    public function addAlbumCollection(AlbumCollection $albumCollection): self
+    public function addAlbum(Album $album): self
     {
-        if (!$this->albumCollections->contains($albumCollection)) {
-            $this->albumCollections->add($albumCollection);
-            $albumCollection->setCollection($this);
+        if (!$this->albums->contains($album)) {
+            $this->albums->add($album);
+            $album->addCollectionn($this);
         }
 
         return $this;
     }
 
-    public function removeAlbumCollection(AlbumCollection $albumCollection): self
+    public function removeAlbum(Album $album): self
     {
-        if ($this->albumCollections->removeElement($albumCollection)) {
-            // set the owning side to null (unless already changed)
-            if ($albumCollection->getCollection() === $this) {
-                $albumCollection->setCollection(null);
-            }
+        if ($this->albums->removeElement($album)) {
+            $album->removeCollectionn($this);
         }
 
         return $this;

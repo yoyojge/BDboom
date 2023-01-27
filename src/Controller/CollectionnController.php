@@ -63,30 +63,12 @@ class CollectionnController extends AbstractController
 
 
 
-
-
+    //PAGE COLLECTION detail :: liste livre dans la collection
     #[Route('/{id}', name: 'app_collectionn_show', methods: ['GET'])]
-    public function show(Collectionn $collectionn, Request $request, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, AlbumCollection $albumCollection, AlbumRepository $albumRepository ): Response
-    {
+    public function show(Collectionn $collectionn, Request $request, /*AlbumCollectionRepository $albumCollectionRepository, */CollectionnRepository $collectionnRepository, AlbumRepository $albumRepository ): Response
+    {        
         
-        //recuperation des elements de la route
-        $routeParams = $request->attributes->get('_route_params');
-        $CollectionId = $routeParams['id'];
-        $CollectionId = intVal($CollectionId);
-        // dd( gettype($CollectionId)  );  
-        $CollectionObj = $collectionnRepository->findBy([ 'id'=>$CollectionId] );
-        // dd($CollectionObj);
-
-        $ListeAlbumCollection = $albumCollectionRepository->findBy([ 'collection'=>$CollectionObj]);
-        // $ListeAlbumCollection = $albumCollectionRepository->findByCollectionId($CollectionId);
-        dd($ListeAlbumCollection);
-
-        $arrayAlbumsId = [];
-        foreach($ListeAlbumCollection as $valeur){     
-
-            $arrayAlbumsId[] = $valeur->album->getId();
-
-        }
+        $ListeAlbumCollection = $collectionn->getAlbums();   
 
         
         return $this->render('collectionn/show.html.twig', [

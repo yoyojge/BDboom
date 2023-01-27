@@ -209,35 +209,30 @@ class BDboomController extends AbstractController
             $albumRepository->save($album, true);   
             
             //recuperer l'id du nouveau livre
-            $albumID = $album->getId();
-            // dd($album->getId());           
+            $albumID = $album->getId();         
 
         }
         else{
              //recuperer l'id du livre deja en BDD
             $albumID = $trouve[0]->getId();
             // dd($trouve[0]->getId()); 
-        }
-                
-        
+        }             
 
         //on enregistre le livre dans la collection du user
         //recuperer l'id de la collection
-        $albumCollection = new AlbumCollection;
         
         $collectionnIdSelected = $request->request->get('collectionn');
-        // dd($request->request->all());
 
-        $albumObj = $albumRepository->findBy( array('id' => $albumID ));
-        $albumCollection->setAlbum( $albumObj[0]);
+        $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
+       
+        // $albumObj = $albumArrayObj[0];
+        $collectionObj = $collectionnRepository->findOneBy( array('id' => $collectionnIdSelected ));
+        // $collectionObj = $collectionArrayObj[0];
+        // $collectionObj->addAlbum($albumObj);
 
-        $collectionObj = $collectionnRepository->findBy( array('id' => $collectionnIdSelected ));
-        $albumCollection->setCollection($collectionObj[0]);
-        
-        $albumCollectionRepository->save($albumCollection, true);
-        
-        
-
+        $albumObj->addCollectionn($collectionObj);
+        // dd($albumObj);
+        $albumRepository->save($albumObj, true);
 
         //ajout d'un message flash
         $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre collection');
@@ -312,20 +307,26 @@ class BDboomController extends AbstractController
         //on retrouve l id de la wishlist du user connecte
         $wishlist = new Wishlist;
         $user = $this->getUser();        
-        $wishlistObj = $wishlistRepository->findBy( ['collector' =>  $user ]);
+        $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);
         // dd($wishlistObj);
+
 
         //on enregistre le livre dans la wishlist du user
         
-        $albumWishlist = new AlbumWishlist;          
+        // $albumWishlist = new AlbumWishlist;          
 
-        $albumObj = $albumRepository->findBy( array('id' => $albumID ));
-        $albumWishlist->setAlbum( $albumObj[0]);
+        $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
+        // $albumWishlist->setAlbum( $albumObj);
+
+
+        $albumObj->addWishlist($wishlistObj);
+        // dd($albumObj);
+        $albumRepository->save($albumObj, true);
 
         // $collectionObj = $collectionnRepository->findBy( array('id' => $collectionnIdSelected ));
-        $albumWishlist->setWishlist($wishlistObj[0]);
+        // $albumWishlist->setWishlist($wishlistObj[0]);
         
-        $albumWishlistRepository->save($albumWishlist, true);  
+        // $albumWishlistRepository->save($albumWishlist, true);  
 
         //ajout d'un message flash
         $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre wishlist');
@@ -348,28 +349,31 @@ class BDboomController extends AbstractController
     #[Route('/BDtheque', name: 'app_BDboom_BDtheque', methods: ['GET'])]
     public function BDtheque(UserRepository $userRepository, BDboomRepository $BDboomRepository,CollectionnRepository $collectionnRepository,  ): Response
     {
-        
-        // dd($tabBleu);
         //on recupere l utilisateur connecté
         //magie de symfony, on peut acceder a $user
         $user = $this->getUser();
-        $id = $user->getId();
+        // $id = $user->getId();
 
-        //retouver toutes les collections attaché a l'id de l'user ::  marche pas !!!
-        // $userCollections = $user->getCollectionns();
+        //retouver toutes les collections attachées a l'id de l'user :: ca foncrionne , mais pas visible dans un dd
+        $collectionnArray = $user->getCollectionns();
+        $wishlistArray = $user->getWishlists();
         // dd($userCollections);
-        $collectionnArray = $collectionnRepository->findBy( ['collector' => $user] );
+        // $collectionnArray = $collectionnRepository->findBy( ['collector' => $user] );
         
         // dd($collectionnArray);
         
         return $this->render('BDboom/BDtheque.html.twig', [
             'collectionns' => $collectionnArray,
+            'wishlists' => $wishlistArray,
         ]);
     }
 
 
 
 
+
+
+    
 
 
 

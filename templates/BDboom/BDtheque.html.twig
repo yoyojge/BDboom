@@ -29,37 +29,66 @@
 
         <h2>Mes Collections</h2>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>CollectionName</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for collectionn in collectionns %}
-            <tr>
-                <td>{{ collectionn.id }}</td>
-                <td>{{ collectionn.CollectionName }}</td>
-                <td>
-                    <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">VOIR</a>
-                    <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">RENOMMER</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-
-
-
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>CollectionName</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for collectionn in collectionns %}
+                <tr>
+                    <td>{{ collectionn.id }}</td>
+                    <td>{{ collectionn.CollectionName }}</td>
+                    <td>
+                        <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">VOIR</a>
+                        <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">RENOMMER</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
         <a href="{{ path('app_collectionn_new') }}">ajouter une collection</a>
+
+
+
+        <h2>Mes Wishlists</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>WishlistName</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                 {% for wishlist in wishlists %}
+                <tr>
+                    <td>{{ wishlist.id }}</td>
+                    <td>{{ wishlist.WishlistName }}</td>
+                    <td>
+                        <a href="{{ path('app_wishlist_show', {'id': wishlist.id}) }}">VOIR</a>
+                        <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">RENOMMER</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+         <a href="{{ path('app_wishlist_new') }}">ajouter une wishlist</a>
+        
 
 
     </div>

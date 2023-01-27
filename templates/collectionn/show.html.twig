@@ -29,7 +29,7 @@
             <tr>
                 <th>Id</th>
                 <th>Album</th>
-                <th>actions</th>
+                {# <th>actions</th> #}
             </tr>
         </thead>
         <tbody>
@@ -37,10 +37,10 @@
             <tr>
                 <td>{{ album.id }}</td>
                 <td>{{ album.title }}</td>
-                <td>
+                {# <td>
                     <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">show</a>
                     <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a>
-                </td>
+                </td> #}
             </tr>
         {% else %}
             <tr>

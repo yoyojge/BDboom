@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AlbumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,6 +48,18 @@ class Album
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $BDboomDate = null;
+
+    #[ORM\ManyToMany(targetEntity: Collectionn::class, mappedBy: 'albums')]
+    private Collection $collectionns;
+
+    #[ORM\ManyToMany(targetEntity: Wishlist::class, mappedBy: 'album')]
+    private Collection $wishlists;
+
+    public function __construct()
+    {
+        $this->collectionns = new ArrayCollection();
+        $this->wishlists = new ArrayCollection();
+    }
 
 
     //add johann 2023-01-25
@@ -187,6 +201,60 @@ class Album
     public function setBDboomDate(?\DateTimeInterface $BDboomDate): self
     {
         $this->BDboomDate = $BDboomDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Collectionn>
+     */
+    public function getCollectionns(): Collection
+    {
+        return $this->collectionns;
+    }
+
+    public function addCollectionn(Collectionn $collectionn): self
+    {
+        if (!$this->collectionns->contains($collectionn)) {
+            $this->collectionns->add($collectionn);
+            $collectionn->addAlbum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollectionn(Collectionn $collectionn): self
+    {
+        if ($this->collectionns->removeElement($collectionn)) {
+            $collectionn->removeAlbum($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wishlist>
+     */
+    public function getWishlists(): Collection
+    {
+        return $this->wishlists;
+    }
+
+    public function addWishlist(Wishlist $wishlist): self
+    {
+        if (!$this->wishlists->contains($wishlist)) {
+            $this->wishlists->add($wishlist);
+            $wishlist->addAlbum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWishlist(Wishlist $wishlist): self
+    {
+        if ($this->wishlists->removeElement($wishlist)) {
+            $wishlist->removeAlbum($this);
+        }
 
         return $this;
     }

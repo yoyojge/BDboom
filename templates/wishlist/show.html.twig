@@ -3,6 +3,13 @@
 {% block title %}Wishlist{% endblock %}
 
 {% block body %}
+
+
+<main>
+
+    
+
+    <div id="myCarouselInner" >
     <h1>Wishlist</h1>
 
     <table class="table">
@@ -12,15 +19,54 @@
                 <td>{{ wishlist.id }}</td>
             </tr>
             <tr>
-                <th>WishlistName</th>
+                <th>CollectionName</th>
                 <td>{{ wishlist.wishlistName }}</td>
             </tr>
         </tbody>
     </table>
+
+
+
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>album</th>
+                {# <th>actions</th> #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for album in ListeAlbumWishlist %}
+            <tr>
+                <td>{{ album.id }}</td>
+                <td>{{ album.title }}</td>
+                {# <td>
+                    <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">show</a>
+                    <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a>
+                </td> #}
+            </tr>
+             {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
 
     <a href="{{ path('app_wishlist_index') }}">back to list</a>
 
     <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">edit</a>
 
     {{ include('wishlist/_delete_form.html.twig') }}
+
+
+    </div>
+</main>
+
+
 {% endblock %}

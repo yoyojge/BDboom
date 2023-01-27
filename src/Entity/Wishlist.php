@@ -25,9 +25,13 @@ class Wishlist
     #[ORM\OneToMany(mappedBy: 'wishlist', targetEntity: AlbumWishlist::class, orphanRemoval: true)]
     private Collection $albumWishlists;
 
+    #[ORM\ManyToMany(targetEntity: Album::class, inversedBy: 'wishlists')]
+    private Collection $album;
+
     public function __construct()
     {
         $this->albumWishlists = new ArrayCollection();
+        $this->album = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -85,6 +89,30 @@ class Wishlist
                 $albumWishlist->setWishlist(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Album>
+     */
+    public function getAlbum(): Collection
+    {
+        return $this->album;
+    }
+
+    public function addAlbum(Album $album): self
+    {
+        if (!$this->album->contains($album)) {
+            $this->album->add($album);
+        }
+
+        return $this;
+    }
+
+    public function removeAlbum(Album $album): self
+    {
+        $this->album->removeElement($album);
 
         return $this;
     }
