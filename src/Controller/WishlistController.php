@@ -42,18 +42,24 @@ class WishlistController extends AbstractController
 
 
 
+
+
+
     //PAGE DETAIL WISHLIST :: liste des albums de la wishlist
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
     public function show(Wishlist $wishlist): Response
     {
         
-        $ListeAlbumWishlist = $wishlist->getAlbums();   
-
+        $ListeAlbumWishlist = $wishlist->getAlbum();   
+        // dd($ListeAlbumWishlist);
         return $this->render('wishlist/show.html.twig', [
             'wishlist' => $wishlist,
             'ListeAlbumWishlist' => $ListeAlbumWishlist
         ]);
     }
+
+
+
 
 
 
@@ -75,6 +81,9 @@ class WishlistController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
+
 
     #[Route('/{id}', name: 'app_wishlist_delete', methods: ['POST'])]
     public function delete(Request $request, Wishlist $wishlist, WishlistRepository $wishlistRepository): Response

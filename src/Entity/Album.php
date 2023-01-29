@@ -52,7 +52,7 @@ class Album
     #[ORM\ManyToMany(targetEntity: Collectionn::class, mappedBy: 'albums')]
     private Collection $collectionns;
 
-    #[ORM\ManyToMany(targetEntity: Wishlist::class, mappedBy: 'album')]
+    #[ORM\ManyToMany(targetEntity: Wishlist::class, mappedBy: 'albums')]
     private Collection $wishlists;
 
     public function __construct()

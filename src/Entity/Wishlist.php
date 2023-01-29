@@ -22,16 +22,13 @@ class Wishlist
     #[ORM\Column(length: 255)]
     private ?string $wishlistName = null;
 
-    #[ORM\OneToMany(mappedBy: 'wishlist', targetEntity: AlbumWishlist::class, orphanRemoval: true)]
-    private Collection $albumWishlists;
-
     #[ORM\ManyToMany(targetEntity: Album::class, inversedBy: 'wishlists')]
-    private Collection $album;
+    private Collection $albums;
 
     public function __construct()
     {
-        $this->albumWishlists = new ArrayCollection();
-        $this->album = new ArrayCollection();
+        // $this->albumWishlists = new ArrayCollection();
+        $this->albums = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,45 +63,45 @@ class Wishlist
     /**
      * @return Collection<int, AlbumWishlist>
      */
-    public function getAlbumWishlists(): Collection
-    {
-        return $this->albumWishlists;
-    }
+    // public function getAlbumWishlists(): Collection
+    // {
+    //     return $this->albumWishlists;
+    // }
 
-    public function addAlbumWishlist(AlbumWishlist $albumWishlist): self
-    {
-        if (!$this->albumWishlists->contains($albumWishlist)) {
-            $this->albumWishlists->add($albumWishlist);
-            $albumWishlist->setWishlist($this);
-        }
+    // public function addAlbumWishlist(AlbumWishlist $albumWishlist): self
+    // {
+    //     if (!$this->albumWishlists->contains($albumWishlist)) {
+    //         $this->albumWishlists->add($albumWishlist);
+    //         $albumWishlist->setWishlist($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeAlbumWishlist(AlbumWishlist $albumWishlist): self
-    {
-        if ($this->albumWishlists->removeElement($albumWishlist)) {
-            // set the owning side to null (unless already changed)
-            if ($albumWishlist->getWishlist() === $this) {
-                $albumWishlist->setWishlist(null);
-            }
-        }
+    // public function removeAlbumWishlist(AlbumWishlist $albumWishlist): self
+    // {
+    //     if ($this->albumWishlists->removeElement($albumWishlist)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($albumWishlist->getWishlist() === $this) {
+    //             $albumWishlist->setWishlist(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Album>
      */
     public function getAlbum(): Collection
     {
-        return $this->album;
+        return $this->albums;
     }
 
     public function addAlbum(Album $album): self
     {
-        if (!$this->album->contains($album)) {
-            $this->album->add($album);
+        if (!$this->albums->contains($album)) {
+            $this->albums->add($album);
         }
 
         return $this;
@@ -112,7 +109,7 @@ class Wishlist
 
     public function removeAlbum(Album $album): self
     {
-        $this->album->removeElement($album);
+        $this->albums->removeElement($album);
 
         return $this;
     }

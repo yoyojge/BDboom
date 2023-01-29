@@ -63,13 +63,15 @@ class CollectionnController extends AbstractController
 
 
 
+
+
     //PAGE COLLECTION detail :: liste livre dans la collection
     #[Route('/{id}', name: 'app_collectionn_show', methods: ['GET'])]
-    public function show(Collectionn $collectionn, Request $request, /*AlbumCollectionRepository $albumCollectionRepository, */CollectionnRepository $collectionnRepository, AlbumRepository $albumRepository ): Response
+    public function show(Collectionn $collectionn ): Response
     {        
         
         $ListeAlbumCollection = $collectionn->getAlbums();   
-
+        // dd($ListeAlbumCollection);
         
         return $this->render('collectionn/show.html.twig', [
             'collectionn' => $collectionn,
