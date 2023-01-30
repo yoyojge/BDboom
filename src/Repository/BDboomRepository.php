@@ -101,8 +101,6 @@ class BDboomRepository
             
         }
 
-
-
         //si from Amazon
         if($sessSearchFrom == "amazon"){
            

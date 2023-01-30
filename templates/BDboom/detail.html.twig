@@ -2,14 +2,11 @@
 
 {% block title %}Welcome BDboom{% endblock %}
 
-{% block body %}
-    
-    
+{% block body %} 
 
 
 <main>
-<div id="myCarouselInner" >
-        
+<div id="myCarouselInner" >        
 
     {#  message flash collection ajoutée #}
     {% for message in app.flashes('albumAjout') %}
@@ -20,148 +17,73 @@
 
 
     <div class="container py-4 my-4 mx-auto d-flex flex-column">
+        
         <div class="header">
             <div class="row r1">
-                <div class="col-md-9 abc">
-
-                    {# si amazon #}
-                    {% if from == "amazon" %}
-                    <h1>{{ item.itemInfo.title.displayValue }}</h1>
-                    {% endif %}
-                    {# si ggbook #}
-                    {% if from == "ggbook" %}
-                    <h1>{{ item.volumeInfo.title }}</h1>
-                    {% endif %}
-
-                </div>
-                <div class="col-md-3 text-right pqr"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                {# <p class="text-right para">Based on 250 Review</p> #}
+                <div class="col-md-9 abc">                    
+                    <h1>{{ detailBook.title }}</h1>
+                </div>  
             </div>
-        </div>
-
-
-        {# si amazon #}
-        {% if from == "amazon" %}
+        </div>      
+        
         <div class="container-body mt-4">
             <div class="row r3">
                 
                 <div class="col-md-7"> 
-                    <img src="{{ item.images.primary.large.uRl }}" alt="{{ item.itemInfo.title.displayValue }}" width="90%" height="95%"> 
+                    <img src="{{ detailBook.cover }}" alt="{{ detailBook.title }}" width="90%" height="95%"> 
                 </div>
                 
                 <div class="col-md-5 p-0 klo">
                     <ul>
-                        <li>{{ item.itemInfo.title.displayValue }}</li>
-                        <li>{{ item.itemInfo.byLineInfo.contributors[0].name }}</li>
-                        {% if item.itemInfo.externalIds.iSBNs is not null or item.itemInfo.externalIds.iSBNs is not empty %}
-                        <li>{{ item.itemInfo.externalIds.iSBNs.displayValues[0] }}</li>
+                        <li>{{ detailBook.title }}</li>
+                        <li>{{ detailBook.author }}</li>
+
+                        {% if detailBook.description is not null or detailBook.description is not empty %}
+                        <li>{{ detailBook.description | striptags  }}</li>
+                        {% endif %}
+
+                        {% if detailBook.isbn is not null and detailBook.isbn is not empty and  detailBook.isbn is not same as('no isbn')  %}
+                        <li>{{ detailBook.isbn }}</li>
                         {% endif %}
                     </ul>
 
                     {% if app.user %}
-                    <div class="mb-2">
-                        {# <a href=""  {% if not app.user %} disabled  {% endif %}> #}
-                           
-                            <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
+                    <div class="mb-2">                                                
+                        <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
 
-                                <button type="submit"> Ajouter à ma collection</button>
-                                <select name="collectionn" id="collectionn">
-                                {% for collectionn in collectionns %}
-                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
-                                {% endfor %}
-                                </select>
-                            </form>
-
-                        {# </a> #}
+                            <button type="submit">Ajouter à ma collection</button>
+                            <input type="hidden" id="addTo" name="addTo" value="collection">
+                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{detailBook|json_encode()}}">
+                            <select name="collectionn" id="collectionn">
+                            {% for collectionn in collectionns %}
+                                <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                            {% endfor %}
+                            </select>
+                        </form>                        
                     </div>
                     
                     <div class="mb-2">
                         <form action="{{ path('app_BDboom_addItemToWishlist') }}" method="GET">
-                            <button type="submit"> Ajouter à ma wishist</button>
+                            <button type="submit">Ajouter à ma wishist</button>
+                            <input type="hidden" id="addTo" value="wishlist">
                         </form>
-
-                        {# <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a> #}
                     </div>
-                    {% endif %}
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    <div class="myt ">
-                        <button type="button" class="btn btn-outline-warning"><a href="{{ item.detailPageURL }}">Acheter sur Amazon {{ item.offers.listings[0].price.displayAmount }}</a></button>
-                    </div>  
-
-
-                </div>
-                             
-            </div>
-           
-        </div>
-        {% endif %}
-        {# fin amazon #}
-
-
-        {# si GGbook #}
-         {% if from == "ggbook" %}
-        <div class="container-body mt-4">
-            <div class="row r3">
-                
-                <div class="col-md-7"> 
-                    {% if item.volumeInfo.imageLinks is defined %}
-                    <img src="{{ item.volumeInfo.imageLinks.thumbnail }}" class="card-img-top" alt="{{ item.volumeInfo.title }}" width="30%" height="auto"> 
                     {% else %}
-                    <img src="/images/default01.gif" class="card-img-top" alt="{{ item.volumeInfo.title }}">
-                    {% endif %}
-                </div>
-                               
-                <div class="col-md-5 p-0 klo">
-                    <ul>
-                        <li>{{ item.volumeInfo.title }}</li>
-                        <li>{{ item.volumeInfo.authors[0] }}</li>
-                         {% if item.volumeInfo.imageLinks is defined %}
-                        <li>                       
-                            {{ item.volumeInfo.description | striptags  }}                 
-                        </li>
-                        {% endif %}
-                        {% if item.volumeInfo.industryIdentifiers[0] is not null or item.volumeInfo.industryIdentifiers[0] is not empty %}
-                        <li>{{ item.volumeInfo.industryIdentifiers[0].identifier }}</li>
-                        {% endif %}
-                    </ul>
-
-                    {% if app.user %}
-                    <div class="mb-2">
-                        {# <a href=""  {% if not app.user %} disabled  {% endif %}> #}
-                           
-                            <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
-
-                                <button type="submit"> Ajouter à ma collection</button>
-                                <select name="collectionn" id="collectionn">
-                                {% for collectionn in collectionns %}
-                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
-                                {% endfor %}
-                                </select>
-                            </form>
-
-                        {# </a> #}
-                    </div>
+                        <div>Connectez-vous pour Ajouter cet album a votre collection.</div>
+                    {% endif %}                    
                     
-                    <div class="mb-2">
-                        <a href="{{ path('app_BDboom_addItemToWishlist') }}"  {% if not app.user %} disabled  {% endif %}>Ajouter à ma wishlist</a>
-                    </div>
+                    {# si amazon bouton acheter #}
+                    {% if detailBook.detailPageUrl is not null or detailBook.detailPageUrl is not empty %}
+                    <div class="myt ">
+                        <button type="button" class="btn btn-outline-warning"><a href="{{ detailBook.detailPageUrl }}">Acheter sur Amazon {{ detailBook.price }}</a></button>
+                    </div>  
                     {% endif %}
-
 
                 </div>
                              
             </div>
            
-        </div>
-        {% endif %}
-        {# fin GGbook #}
-
+        </div>   
         
     </div>
 

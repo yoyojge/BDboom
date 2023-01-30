@@ -21,7 +21,7 @@ class BDboomAPIsearchRepository  extends AbstractController
 {
     
 
-    public function APIsearch($keyword)
+    public function APIsearchAmazon($keyword)
     {             
         $config = new Configuration();
 
@@ -318,11 +318,17 @@ class BDboomAPIsearchRepository  extends AbstractController
 
 
 
-
-
-
-    public function scrappThis($url)
-    {   
-        return $url;
+    public function APIsearchGoogle($bdsearch)
+    {        
+        $bdsearchGGbook = str_replace(" ","+",$bdsearch);
+        $urlGGbook = 'https://www.googleapis.com/books/v1/volumes?q='.$bdsearchGGbook.'&key='.$this->getParameter('app.googleapikey');
+        $listDecodeGGbook = json_decode(file_get_contents($urlGGbook), true); 
+        $listItemsGGbook = $listDecodeGGbook['items'];   
+        return   $listItemsGGbook;
     }
+
+    // public function scrappThis($url)
+    // {   
+    //     return $url;
+    // }
 }
