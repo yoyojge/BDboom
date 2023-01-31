@@ -6,31 +6,37 @@
         {% for item in listItemsAmazon %}
         <div class="col"> 
             <div class="card h-100 shadow-sm"> 
-                <img src="{{ item.images.primary.large.uRl }}" class="card-img-top" alt="{{ item.itemInfo.title.displayValue }}"> 
+                <img src="{{ item.cover }}" class="card-img-top" alt="{{ item.title }}"> 
                 <div class="card-body"> 
                     
                     <div class="clearfix mb-3"> 
-                        <span class="float-start badge rounded-pill bg-primary">{{ item.itemInfo.title.displayValue }}</span> 
+                        <span class="float-start badge rounded-pill bg-primary">{{ item.title }}</span> 
                         {# <span class="float-end price-hp">12354.00&euro;</span>  #}
                     </div>
                     
                     {# <h5 class="card-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam quidem eaque ut eveniet aut quis rerum. Asperiores accusamus harum ducimus velit odit ut. Saepe, iste optio laudantium sed aliquam sequi.</h5>  #}
+                    {# {{ dump(item) }}  #}
+                    <form action="{{ path('app_BDboom_detail' , {'product': 'productAmazon','id': loop.index}) }}" method="POST">
+                        {# <input type="hidden" id="detailLivre" name="detailLivre" value="{{item|serialize('json')}}"> #}
+                        <input type="hidden" id="detailLivre" name="detailLivre" value="{{item|json_encode()}}">
+                        <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
+                        <button type="submit">Voir le détail</button>                        
+                    </form>
 
-
-                    <div class="text-center my-4"> 
+                    {# <div class="text-center my-4"> 
                         <a href=" {{ path('app_BDboom_detail' , {'product': 'productAmazon','id': loop.index}) }}" class="btn btn-warning">Voir le détail</a> 
+                    </div>  #}
+
+                    <div class="text-center my-4"> 
+                        <a href=" {{ item.detailPageUrl }}" class="btn btn-warning">Ajouter à ma collection</a> 
                     </div> 
 
                     <div class="text-center my-4"> 
-                        <a href=" {{ item.detailPageURL }}" class="btn btn-warning">Ajouter à ma collection</a> 
+                        <a href=" {{ item.detailPageUrl }}" class="btn btn-warning">Ajouter à ma wishlist</a> 
                     </div> 
 
                     <div class="text-center my-4"> 
-                        <a href=" {{ item.detailPageURL }}" class="btn btn-warning">Ajouter à ma wishlist</a> 
-                    </div> 
-
-                    <div class="text-center my-4"> 
-                        <a href=" {{ item.detailPageURL }}" class="btn btn-warning">Acheter sur Amazon</a> 
+                        <a href=" {{ item.detailPageUrl }}" class="btn btn-warning">Acheter sur Amazon</a> 
                     </div> 
 
                 </div> 

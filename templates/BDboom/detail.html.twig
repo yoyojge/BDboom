@@ -48,12 +48,14 @@
                     </ul>
 
                     {% if app.user %}
+                    {# {{ dump(detailBook) }}  #}
                     <div class="mb-2">                                                
-                        <form action="{{ path('app_BDboom_addItemToCollection') }}" method="POST">
+                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
 
                             <button type="submit">Ajouter à ma collection</button>
                             <input type="hidden" id="addTo" name="addTo" value="collection">
                             <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{detailBook|json_encode()}}">
+                            <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
                             <select name="collectionn" id="collectionn">
                             {% for collectionn in collectionns %}
                                 <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
@@ -63,9 +65,11 @@
                     </div>
                     
                     <div class="mb-2">
-                        <form action="{{ path('app_BDboom_addItemToWishlist') }}" method="GET">
+                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
                             <button type="submit">Ajouter à ma wishist</button>
-                            <input type="hidden" id="addTo" value="wishlist">
+                            <input type="hidden" id="addTo" name="addTo" value="wishlist">
+                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{detailBook|json_encode()}}">
+                            <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
                         </form>
                     </div>
                     {% else %}

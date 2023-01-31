@@ -49,7 +49,7 @@ class BDboomAPIsearchRepository  extends AbstractController
         $searchIndex = "Books";
 
         # Specify item count to be returned in search result
-        $itemCount = 9;
+        $itemCount = 10;
 
         /*
         * Choose resources you want from SearchItemsResource enum
@@ -318,6 +318,44 @@ class BDboomAPIsearchRepository  extends AbstractController
 
 
 
+
+
+    public function APIcleanAmazonData($listItemsAmazonBrut)
+    { 
+
+       
+        for($i=0; $i<count($listItemsAmazonBrut); $i++){
+            $detailBook[$i]['title'] = $listItemsAmazonBrut[$i]['itemInfo']['title']['displayValue'];
+            $detailBook[$i]['cover'] = $listItemsAmazonBrut[$i]['images']['primary']['large']['uRL'];
+            $detailBook[$i]['description'] = "";
+            //boucle sur le tableau pour recuperer toutes les infos
+            $detailBook[$i]['author'] = "";
+            for($j = 0; $j < count($listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors']); $j++){
+                $detailBook[$i]['author'] .= $listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors'][$j]['name'].", ";
+            }  
+            if(!empty($listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs'])){
+                $detailBook[$i]['isbn'] = $listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs']['displayValues'][0];   
+            }         
+            else{
+                $detailBook[$i]['isbn'] = "no isbn";
+            }                   
+            $detailBook[$i]['detailPageUrl'] = $listItemsAmazonBrut[$i]['detailPageURL'];
+            $detailBook[$i]['price'] = $listItemsAmazonBrut[$i]['offers']['listings'][0]['price']['displayAmount']; 
+            $detailBook[$i]['refBDfugue'] = "";
+            $detailBook[$i]['refAmazone'] = "";
+
+        }
+        // dd($detailBook);
+        return $detailBook;
+    }
+
+
+
+
+
+
+
+
     public function APIsearchGoogle($bdsearch)
     {        
         $bdsearchGGbook = str_replace(" ","+",$bdsearch);
@@ -326,6 +364,52 @@ class BDboomAPIsearchRepository  extends AbstractController
         $listItemsGGbook = $listDecodeGGbook['items'];   
         return   $listItemsGGbook;
     }
+
+
+    public function APIcleanGoogle($listItemsGGbookBrut)
+    { 
+       
+        for($i=0; $i<count($listItemsGGbookBrut); $i++){
+            $detailBook[$i]['title'] = $listItemsGGbookBrut[$i]['volumeInfo']['title'];
+            if(!empty($listItemsGGbookBrut[$i]['volumeInfo']['imageLinks']['thumbnail'])){
+                $detailBook[$i]['cover'] = $listItemsGGbookBrut[$i]['volumeInfo']['imageLinks']['thumbnail'];
+            }
+            else{
+                $detailBook[$i]['cover'] = "no cover";
+            }
+
+            if(!empty($listItemsGGbookBrut[$i]['volumeInfo']['description'])){
+                $detailBook[$i]['description'] = $listItemsGGbookBrut[$i]['volumeInfo']['description'];
+            }
+            else{
+                $detailBook[$i]['description'] = "";
+            }
+            //boucle sur le tableau pour recuperer toutes les infos
+            $detailBook[$i]['author'] = "";
+            if(!empty($listItemsGGbookBrut[$i]['volumeInfo']['authors'])){
+                for($j = 0; $j < count($listItemsGGbookBrut[$i]['volumeInfo']['authors']); $j++){
+                    $detailBook[$i]['author'] .= $listItemsGGbookBrut[$i]['volumeInfo']['authors'][$j].", ";
+                } 
+            }
+            if(!empty($listItemsGGbookBrut[$i]['volumeInfo']['industryIdentifiers'][1])){       
+                $detailBook[$i]['isbn'] = $listItemsGGbookBrut[$i]['volumeInfo']['industryIdentifiers'][1]['identifier'];  
+            } 
+            else{
+                $detailBook[$i]['isbn'] = "no isbn";
+            }                   
+            $detailBook[$i]['detailPageUrl'] = "";
+            $detailBook[$i]['price'] = "";   
+            $detailBook[$i]['refBDfugue'] = "";
+            $detailBook[$i]['refAmazone'] = "";
+
+        }
+        // dd($detailBook);
+        return $detailBook;
+    }
+
+
+
+
 
     // public function scrappThis($url)
     // {   

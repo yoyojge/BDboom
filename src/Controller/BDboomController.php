@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -71,29 +72,29 @@ class BDboomController extends AbstractController
     // PAGE LISTE :: de resultat apres formulaire de recherche du header
     #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['POST'])]
     public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request): Response
-    {
-        
+    {        
         //recuperation de la requete de recherche et enregistrement dans une session
         $bdsearch =$request->get('bdsearch');
         $this->session->set('sessKeywordSearch', $bdsearch);
 
         //TODO:recherche dans BDboom
 
-
-
         //recherche avec API amazon        
-        $listItemsAmazon = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
-        $this->session->set('sessSearchAmazon', $listItemsAmazon);
+        $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
+        $listItemsAmazon = $BDboomAPIsearchRepository->APIcleanAmazonData($listItemsAmazonBrut);
+        // $this->session->set('sessSearchAmazon', $listItemsAmazon);
         // dd($listItemsAmazon);
         
         //recherche avec API google book
-        $listItemsGGbook = $BDboomAPIsearchRepository->APIsearchGoogle($bdsearch);        
-        $this->session->set('sessSearchGGbook', $listItemsGGbook);
-        // dd($urlGGbook);       
+        $listItemsGGbookBrut = $BDboomAPIsearchRepository->APIsearchGoogle($bdsearch);  
+        $listItemsGGbook = $BDboomAPIsearchRepository->APIcleanGoogle($listItemsGGbookBrut);  
+        // $this->session->set('sessSearchGGbook', $listItemsGGbook);
+        // dd($listItemsGGbook);       
 
         return $this->render('BDboom/listeResultat.html.twig', [
             'listItemsAmazon' => $listItemsAmazon,
             'listItemsGGbook' => $listItemsGGbook,
+            'bdsearch' => $bdsearch,
         ]);
     }
 
@@ -105,76 +106,27 @@ class BDboomController extends AbstractController
 
 
     // PAGE DETAIL :: livre
-    #[Route('/detail/{product}/{id}', name: 'app_BDboom_detail', methods: ['GET'])]
+    #[Route('/detail/{product}/{id}', name: 'app_BDboom_detail', methods: ['GET','POST'])]
     public function detail(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
-    {    
-        
+    {            
         //recuperation des elements de la route
-        $routeParams = $request->attributes->get('_route_params');
-        $urlProduct = $routeParams['product'];
-        $urlProductId = $routeParams['id'];
+        // $routeParams = $request->attributes->get('_route_params');
+        // $urlProduct = $routeParams['product'];
+        // $urlProductId = $routeParams['id'];
 
-        //pour avoir un seul bloc d'info sur la page detail : 
-        $detailBook = [];
+        $bdsearch = $request->request->get('bdsearch');
+            
+        //recuperation des infos par session ou par json si on vient de addCollection OU addWishlist
+        if(!empty( $this->session->get('bookDetail', [])  )){
+            //si on vient de ajouter a la collection 
+            $detailBook = $this->session->get('bookDetail', []);
+            $this->session->set('bookDetail', ''); 
+        }  
+        else{
+            //si on vient de la page liste
+            $detailBook = json_decode($request->request->get('detailLivre'), true);  
+        }      
 
-        //TODO: on vient de BDboom
-
-        // on vient de amazon :: productAmazon
-        if(!empty($urlProduct) && $urlProduct == "productAmazon"){
-            $sessSearchFullAmazon = $this->session->get('sessSearchAmazon', []);
-            // decalage - 1 entre le retour de loop dans twig et l'indexation des tableaux qui commence a 0
-            $indexSess = $urlProductId -1;
-            $this->session->set('sessSearchDetailIndex', $indexSess);        
-            $this->session->set('sessSearchDetail', $sessSearchFullAmazon[$indexSess]);
-            $this->session->set('sessSearchFrom', 'amazon');            
-
-            $detailDisplay = $sessSearchFullAmazon[$indexSess];
-
-            $detailBook['title'] = $detailDisplay['itemInfo']['title']['displayValue'];
-            $detailBook['cover'] = $detailDisplay['images']['primary']['large']['uRL'];
-            $detailBook['description'] = "";
-            //boucle sur le tableau pour recuperer toutes les infos
-            $detailBook['author'] = "";
-            for($i = 0; $i < count($detailDisplay['itemInfo']['byLineInfo']['contributors']); $i++){
-                $detailBook['author'] .= $detailDisplay['itemInfo']['byLineInfo']['contributors'][$i]['name'].", ";
-            }           
-            $detailBook['isbn'] = $detailDisplay['itemInfo']['externalIds']['iSBNs']['displayValues'][0];                      
-            $detailBook['detailPageUrl'] = $detailDisplay['detailPageURL'];
-            $detailBook['price'] = $detailDisplay['offers']['listings'][0]['price']['displayAmount']; 
-            $detailBook['refBDfugue'] = "";
-            $detailBook['refAmazone'] = "";
-        }
-
-        //on vient de ggbook :: productGGbook
-        if( !empty($urlProduct) && $urlProduct == "productGGbook"){
-            $sessSearchFullGGbook = $this->session->get('sessSearchGGbook', []);
-            // decalage - 1 entre le retour de loop dans twig et l'indexation des tableaux qui commence a 0
-            $indexSess = $urlProductId -1;
-            $this->session->set('sessSearchDetailIndex', $indexSess);        
-            $this->session->set('sessSearchDetail', $sessSearchFullGGbook[$indexSess]);
-            $this->session->set('sessSearchFrom', 'ggbook'); 
-
-            $detailDisplay = $sessSearchFullGGbook[$indexSess];           
-
-            $detailBook['title'] = $detailDisplay['volumeInfo']['title'];
-            $detailBook['cover'] = $detailDisplay['volumeInfo']['imageLinks']['thumbnail'];
-            $detailBook['description'] = $detailDisplay['volumeInfo']['description'];
-            //boucle sur le tableau pour recuperer toutes les infos
-            $detailBook['author'] = "";
-            for($i = 0; $i < count($detailDisplay['volumeInfo']['authors']); $i++){
-                $detailBook['author'] .= $detailDisplay['volumeInfo']['authors'][$i].", ";
-            } 
-            if(!empty($detailDisplay['volumeInfo']['industryIdentifiers'][1])){       
-                $detailBook['isbn'] = $detailDisplay['volumeInfo']['industryIdentifiers'][1]['identifier'];  
-            } 
-            else{
-                $detailBook['isbn'] = "no isbn";
-            }                   
-            $detailBook['detailPageUrl'] = "";
-            $detailBook['price'] = "";   
-            $detailBook['refBDfugue'] = "";
-            $detailBook['refAmazone'] = "";
-        }   
 
         //on recupere les collections du user coonecte
         $user = $this->getUser();
@@ -185,11 +137,9 @@ class BDboomController extends AbstractController
         // dd($collectionns);
 
         return $this->render('BDboom/detail.html.twig', [
-            // 'item' => $sessSearchFull[$indexSess],
-            // 'item' => $this->session->get('sessSearchDetail'),
             'detailBook' => $detailBook,
-            // 'from' => $this->session->get('sessSearchFrom'),
             'collectionns' => $collectionns,
+            'bdsearch' => $bdsearch,
         ]);
     }
 
@@ -199,26 +149,19 @@ class BDboomController extends AbstractController
 
 
 
-    // AJOUTER UN LIVRE A SA COLLECTION
-    #[Route('/addItemToCollection', name: 'app_BDboom_addItemToCollection', methods: ['GET', 'POST'])]
-    public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository): Response
+    // AJOUTER UN LIVRE A SA COLLECTION ou SA WISHLIST :: mutualisation de la fonction
+    #[Route('/addItemToCollectionOrWishlist', name: 'app_BDboom_addItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
+    public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
     {       
         
         $addTo = $request->request->get('addTo');
+        $bdsearch = $request->request->get('bdsearch');
         $arrayBookInfo = json_decode($request->request->get('infoDetailArray'), true);
-        // dd($addTo, $infoDetailArray);
         
-        //recuperation des infos de recherche stockées en session
-        // $sessSearchDetail = $this->session->get('sessSearchDetail', []);
-        // $sessSearchDetailIndex = $this->session->get('sessSearchDetailIndex', []);   
-        // $sessSearchFrom = $this->session->get('sessSearchFrom');
-
-        //fonction de gestion des infos du livres a inserer
-        // $arrayBookInfo = $BDboomRepository->bookInfo($sessSearchDetail, $sessSearchFrom);
+        // dd($arrayBookInfo);
 
         //date
-        $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
-       
+        $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));       
         
         //on verifie si le livre n'est pas deja en BDD ::  (recherche par isbn) ET si isbn different de no isbn, 
         //eventuellement rechercher par ref amazon ou ref google book
@@ -242,10 +185,10 @@ class BDboomController extends AbstractController
             $album->setRefBDfugues($arrayBookInfo['refBDfugue']);
             $album->setRefAmazon($arrayBookInfo['refAmazone']);
             $album->setIsbn($arrayBookInfo['isbn']);
-            $album->setKeyword( $this->session->get('sessKeywordSearch')." ".$arrayBookInfo['title'] );
+            $album->setKeyword( $bdsearch." ".$arrayBookInfo['title'] );
             $album->setAuthor($arrayBookInfo['author']);
             $album->setBDboomDate($Now);
-            $album->setOrigine( $this->session->get('sessSearchFrom') );
+            $album->setOrigine( $addTo );
 
             $albumRepository->save($album, true);   
             
@@ -256,125 +199,62 @@ class BDboomController extends AbstractController
         else{
              //recuperer l'id du livre deja en BDD
             $albumID = $trouve[0]->getId();
-        }             
+        }      
+
+        // dd($addTo);
 
         //on enregistre le livre dans la collection du user
-        //recuperer l'id de la collection        
-        $collectionnIdSelected = $request->request->get('collectionn');
+        if($addTo == "collection"){
+            //recuperer l'id de la collection        
+            $collectionnIdSelected = $request->request->get('collectionn');        
 
-        $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
-        $collectionObj = $collectionnRepository->findOneBy( array('id' => $collectionnIdSelected ));
+            $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
+            $collectionObj = $collectionnRepository->findOneBy( array('id' => $collectionnIdSelected ));
 
-        $albumObj->addCollectionn($collectionObj);
+            $albumObj->addCollectionn($collectionObj);
 
-        $albumRepository->save($albumObj, true);
+            $albumRepository->save($albumObj, true);       
 
-        //ajout d'un message flash
-        $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre collection');
+            //ajout d'un message flash
+            $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre collection');
+            
+        }
 
-        //on reste sur la meme page 
+        if($addTo == "wishlist"){
+ 
+            // $wishlist = new Wishlist;
+            $user = $this->getUser();        
+            $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);                 
+    
+            $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
+               
+            $albumObj->addWishlist($wishlistObj);
+            $albumRepository->save($albumObj, true);
+    
+            //ajout d'un message flash
+            $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre wishlist');
+        }
+
+
+        //session pour retour information sur page detail
+        $this->session->set('bookDetail', $arrayBookInfo);    
+     
+        //on retourne sur la meme page detail
         $previousUrl = $_SERVER['HTTP_REFERER'];
         $splitUrl = explode("detail/", $previousUrl);
         $myUrlParam = explode("/", $splitUrl[1]);
-        // dd($myUrlParam);
-        return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
-        
-    }
-
-
-
-
-
-
-
-    // AJOUTER UN LIVRE A SA WISHLIST
-    #[Route('/addItemToWishlit', name: 'app_BDboom_addItemToWishlist', methods: ['GET', 'POST'])]
-    public function addItemToWishlist(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, AlbumWishlistRepository $albumWishlistRepository): Response
-    {
-         
-        //recuperation des infos de recherche stockées en session
-        $sessSearchDetail = $this->session->get('sessSearchDetail', []);
-        $sessSearchFrom = $this->session->get('sessSearchFrom');
-
-        //fonction de gestion des infos du livres a inserer
-        $arrayBookInfo = $BDboomRepository->bookInfo($sessSearchDetail, $sessSearchFrom);
-
-         //date
-         $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
        
-        
-         //on verifie si le livre n'est pas deja en BDD ::  (recherche par isbn)
-         $trouve = $albumRepository->findBy( array('isbn' => $arrayBookInfo['isbn'] ));
-        //  dd($arrayBookInfo['isbn'], $trouve);       
-         
-         //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
-         if(empty($trouve)){
- 
-             //on enregistre l'image sur le serveur ::  que si pas deja existant
-             $newPathCover = $BDboomRepository->imageLoad($arrayBookInfo['coverOnline']);
- 
-             $album = new Album;
-             $album->setTitle($arrayBookInfo['title']);
-             $album->setCover($newPathCover);
-             $album->setDescription($arrayBookInfo['description']);
-             $album->setRefBDfugues($arrayBookInfo['refBDfugue']);
-             $album->setRefAmazon($arrayBookInfo['refAmazone']);
-             $album->setIsbn($arrayBookInfo['isbn']);
-             $album->setKeyword( $this->session->get('sessKeywordSearch')." ".$arrayBookInfo['title'] );
-             $album->setAuthor($arrayBookInfo['authors']);
-             $album->setBDboomDate($Now);
-             $album->setOrigine( $this->session->get('sessSearchFrom') );
- 
-             $albumRepository->save($album, true);   
-             
-             //recuperer l'id du nouveau livre
-             $albumID = $album->getId();
-             // dd($album->getId());           
- 
-         }
-         else{
-              //recuperer l'id du livre deja en BDD
-             $albumID = $trouve[0]->getId();
-             // dd($trouve[0]->getId()); 
-         }
-
-
-        //on retrouve l id de la wishlist du user connecte
-        $wishlist = new Wishlist;
-        $user = $this->getUser();        
-        $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);
-        // dd($wishlistObj);
-
-
-        //on enregistre le livre dans la wishlist du user
-        
-        // $albumWishlist = new AlbumWishlist;          
-
-        $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
-        // $albumWishlist->setAlbum( $albumObj);
-
-
-        $albumObj->addWishlist($wishlistObj);
-        // dd($albumObj);
-        $albumRepository->save($albumObj, true);
-
-        // $collectionObj = $collectionnRepository->findBy( array('id' => $collectionnIdSelected ));
-        // $albumWishlist->setWishlist($wishlistObj[0]);
-        
-        // $albumWishlistRepository->save($albumWishlist, true);  
-
-        //ajout d'un message flash
-        $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre wishlist');
-
-        //on reste sur la meme page 
-        $previousUrl = $_SERVER['HTTP_REFERER'];
-        $splitUrl = explode("detail/", $previousUrl);
-        $myUrlParam = explode("/", $splitUrl[1]);
-        // dd($myUrlParam);
         return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
-        
+      
     }
 
+
+
+
+
+
+
+    
 
 
 
