@@ -323,7 +323,7 @@ class BDboomAPIsearchRepository  extends AbstractController
     public function APIcleanAmazonData($listItemsAmazonBrut)
     { 
 
-       
+    //    dd($listItemsAmazonBrut);
         for($i=0; $i<count($listItemsAmazonBrut); $i++){
             $detailBook[$i]['title'] = $listItemsAmazonBrut[$i]['itemInfo']['title']['displayValue'];
             $detailBook[$i]['cover'] = $listItemsAmazonBrut[$i]['images']['primary']['large']['uRL'];
@@ -342,7 +342,7 @@ class BDboomAPIsearchRepository  extends AbstractController
             $detailBook[$i]['detailPageUrl'] = $listItemsAmazonBrut[$i]['detailPageURL'];
             $detailBook[$i]['price'] = $listItemsAmazonBrut[$i]['offers']['listings'][0]['price']['displayAmount']; 
             $detailBook[$i]['refBDfugue'] = "";
-            $detailBook[$i]['refAmazone'] = "";
+            $detailBook[$i]['refAmazone'] = $listItemsAmazonBrut[$i]['aSIN'];
 
         }
         // dd($detailBook);

@@ -39,6 +39,18 @@ class AlbumRepository extends ServiceEntityRepository
         }
     }
 
+
+    public function findByKeyword($keyword){
+        $query = $this->createQueryBuilder('a')
+            ->where('a.keyword LIKE :key')
+            ->setParameter('key' , '%'.$keyword.'%')
+            ->setMaxResults(10)
+            ->getQuery();
+ 
+        return $query->getResult();
+    }
+
+
 //    /**
 //     * @return Album[] Returns an array of Album objects
 //     */

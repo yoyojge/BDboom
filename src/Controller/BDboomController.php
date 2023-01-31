@@ -71,13 +71,15 @@ class BDboomController extends AbstractController
 
     // PAGE LISTE :: de resultat apres formulaire de recherche du header
     #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['POST'])]
-    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request): Response
+    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository): Response
     {        
         //recuperation de la requete de recherche et enregistrement dans une session
         $bdsearch =$request->get('bdsearch');
-        $this->session->set('sessKeywordSearch', $bdsearch);
+        // $this->session->set('sessKeywordSearch', $bdsearch);
 
         //TODO:recherche dans BDboom
+        $listItemsBDboom = $albumRepository->findByKeyword($bdsearch);
+        // dd($listItemsBDboom);
 
         //recherche avec API amazon        
         $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
@@ -94,6 +96,7 @@ class BDboomController extends AbstractController
         return $this->render('BDboom/listeResultat.html.twig', [
             'listItemsAmazon' => $listItemsAmazon,
             'listItemsGGbook' => $listItemsGGbook,
+            'listItemsBDboom' => $listItemsBDboom,
             'bdsearch' => $bdsearch,
         ]);
     }
