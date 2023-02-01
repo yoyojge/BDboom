@@ -92,6 +92,31 @@ class BDboomRepository
     }
 
 
+    function objectToArray($arrayOfObjectsBDboom){
+        $listItemsBDboom = [];
+        for($i=0;$i < count($arrayOfObjectsBDboom); $i++){
+
+
+            $detailBook[$i]['title'] = $arrayOfObjectsBDboom[$i]->getTitle();
+            if($arrayOfObjectsBDboom[$i]->getCover() != "no cover"){
+                $detailBook[$i]['cover'] = "/images/book/".$arrayOfObjectsBDboom[$i]->getCover();
+            } 
+            else{
+                $detailBook[$i]['cover'] = $arrayOfObjectsBDboom[$i]->getCover();
+            }     
+            $detailBook[$i]['description'] = $arrayOfObjectsBDboom[$i]->getDescription();  
+            $detailBook[$i]['author'] = $arrayOfObjectsBDboom[$i]->getAuthor();
+            $detailBook[$i]['isbn'] = $arrayOfObjectsBDboom[$i]->getIsbn(); 
+            $detailBook[$i]['detailPageUrl'] =""; 
+            $detailBook[$i]['price'] =""; 
+            $detailBook[$i]['refBDfugue'] = $arrayOfObjectsBDboom[$i]->getRefBDfugues();
+            $detailBook[$i]['refAmazone'] = $arrayOfObjectsBDboom[$i]->getRefAmazon();
+
+        }
+        return $detailBook;
+
+    }
+
 
 
 

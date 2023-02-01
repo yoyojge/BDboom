@@ -70,34 +70,59 @@ class BDboomController extends AbstractController
 
 
     // PAGE LISTE :: de resultat apres formulaire de recherche du header
-    #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['POST'])]
-    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository): Response
+    #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['GET','POST'])]
+    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
     {        
-        //recuperation de la requete de recherche et enregistrement dans une session
-        $bdsearch =$request->get('bdsearch');
-        // $this->session->set('sessKeywordSearch', $bdsearch);
 
-        //TODO:recherche dans BDboom
-        $listItemsBDboom = $albumRepository->findByKeyword($bdsearch);
-        // dd($listItemsBDboom);
 
-        //recherche avec API amazon        
-        $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
-        $listItemsAmazon = $BDboomAPIsearchRepository->APIcleanAmazonData($listItemsAmazonBrut);
-        // $this->session->set('sessSearchAmazon', $listItemsAmazon);
-        // dd($listItemsAmazon);
-        
-        //recherche avec API google book
-        $listItemsGGbookBrut = $BDboomAPIsearchRepository->APIsearchGoogle($bdsearch);  
-        $listItemsGGbook = $BDboomAPIsearchRepository->APIcleanGoogle($listItemsGGbookBrut);  
-        // $this->session->set('sessSearchGGbook', $listItemsGGbook);
-        // dd($listItemsGGbook);       
+        if(!empty( $this->session->get('listItemsBDboom', [])  )){
+            //si on vient de ajouter a la collection depuis la page liste
+            $listItemsBDboom = $this->session->get('listItemsBDboom', []);
+            $this->session->set('listItemsBDboom', ''); 
+
+            $listItemsAmazon = $this->session->get('listItemsAmazon', []);
+            $this->session->set('listItemsAmazon', ''); 
+
+            $listItemsGGbook = $this->session->get('listItemsGGbook', []);
+            $this->session->set('listItemsGGbook', ''); 
+
+            $bdsearch =$this->session->get('bdsearch', []);
+            $this->session->set('bdsearch', ''); 
+        }  
+        else{
+            //depuis la page detail
+            //recuperation de la requete de recherche et enregistrement dans une session
+            $bdsearch =$request->get('bdsearch');
+            // $this->session->set('sessKeywordSearch', $bdsearch);
+
+            //TODO:recherche dans BDboom
+            $arrayOfObjectsBDboom = $albumRepository->findByKeyword($bdsearch);        
+            $listItemsBDboom = $BDboomRepository->objectToArray($arrayOfObjectsBDboom);
+            // dd($listItemsBDboom);
+
+            //recherche avec API amazon        
+            $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
+            $listItemsAmazon = $BDboomAPIsearchRepository->APIcleanAmazonData($listItemsAmazonBrut);
+            // $this->session->set('sessSearchAmazon', $listItemsAmazon);
+            // dd($listItemsAmazon);
+            
+            //recherche avec API google book
+            $listItemsGGbookBrut = $BDboomAPIsearchRepository->APIsearchGoogle($bdsearch);  
+            $listItemsGGbook = $BDboomAPIsearchRepository->APIcleanGoogle($listItemsGGbookBrut);  
+            // $this->session->set('sessSearchGGbook', $listItemsGGbook);
+            // dd($listItemsGGbook);     
+        }  
+
+        //on recupere les collections du user coonecte
+        $user = $this->getUser();
+        $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
 
         return $this->render('BDboom/listeResultat.html.twig', [
             'listItemsAmazon' => $listItemsAmazon,
             'listItemsGGbook' => $listItemsGGbook,
             'listItemsBDboom' => $listItemsBDboom,
             'bdsearch' => $bdsearch,
+            'collectionns' => $collectionns,
         ]);
     }
 
@@ -131,7 +156,7 @@ class BDboomController extends AbstractController
         }      
 
 
-        //on recupere les collections du user coonecte
+        //on recupere les collections du user coonnecte
         $user = $this->getUser();
         //ca marche pas ...
         // $collectionsUser = $user->getCollectionns();
@@ -159,6 +184,10 @@ class BDboomController extends AbstractController
         
         $addTo = $request->request->get('addTo');
         $bdsearch = $request->request->get('bdsearch');
+
+        //session pour passage variable apres re routage
+        $this->session->set('bdsearch', $bdsearch);
+
         $arrayBookInfo = json_decode($request->request->get('infoDetailArray'), true);
         
         // dd($arrayBookInfo);
@@ -206,6 +235,7 @@ class BDboomController extends AbstractController
 
         // dd($addTo);
 
+        
         //on enregistre le livre dans la collection du user
         if($addTo == "collection"){
             //recuperer l'id de la collection        
@@ -239,15 +269,42 @@ class BDboomController extends AbstractController
         }
 
 
-        //session pour retour information sur page detail
-        $this->session->set('bookDetail', $arrayBookInfo);    
-     
-        //on retourne sur la meme page detail
+        //retour sur la page precedente (pahe liste ou page detail)
         $previousUrl = $_SERVER['HTTP_REFERER'];
-        $splitUrl = explode("detail/", $previousUrl);
-        $myUrlParam = explode("/", $splitUrl[1]);
-       
-        return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
+
+        $pos1 = strpos($previousUrl, 'detail');
+        $pos2 = strpos($previousUrl, 'listeResultat');
+
+        // dd($pos1, $pos2);
+
+        //page detail
+        if($pos1 != false){
+            //session pour retour information sur page detail
+            $this->session->set('bookDetail', $arrayBookInfo);    
+        
+            //on retourne sur la meme page detail        
+            $splitUrl = explode("detail/", $previousUrl);
+            $myUrlParam = explode("/", $splitUrl[1]);
+        
+            return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
+        }
+
+        //page liste
+        if($pos2 != false){            
+
+            $listItemsBDboom = json_decode($request->request->get('listItemsBDboom'), true);
+            $listItemsAmazon = json_decode($request->request->get('listItemsAmazon'), true);
+            $listItemsGGbook = json_decode($request->request->get('listItemsGGbook'), true);
+
+            //session pour retour information sur page liste
+            $this->session->set('listItemsBDboom', $listItemsBDboom);
+            $this->session->set('listItemsAmazon', $listItemsAmazon);
+            $this->session->set('listItemsGGbook', $listItemsGGbook);
+        
+            //on retourne sur la meme page liste        
+                
+            return $this->redirectToRoute('app_BDboom_listeResultat',[], Response::HTTP_SEE_OTHER);
+        }
       
     }
 

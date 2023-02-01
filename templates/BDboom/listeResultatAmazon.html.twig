@@ -36,11 +36,40 @@
                     </form>                    
 
                     <div class="text-center my-4"> 
-                        <a href=" {{ item.detailPageUrl }}" class="btn btn-warning">Ajouter à ma collection</a> 
+                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
+
+                            
+                            <input type="hidden" id="addTo" name="addTo" value="collection">
+                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
+                            <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
+                            <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
+                            <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
+                            <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
+                            <div>
+                                <select name="collectionn" id="collectionn">
+                                {% for collectionn in collectionns %}
+                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div><button type="submit">Ajouter à ma collection</button></div>
+
+                        </form>   
                     </div> 
 
                     <div class="text-center my-4"> 
-                        <a href=" {{ item.detailPageUrl }}" class="btn btn-warning">Ajouter à ma wishlist</a> 
+                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
+                            
+                            <input type="hidden" id="addTo" name="addTo" value="wishlist">
+                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
+                            <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
+                            <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
+                            <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
+                            <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
+                            
+                            <div><button type="submit">Ajouter à ma wishlist</button></div>
+
+                        </form>   
                     </div> 
 
                     <div class="text-center my-4"> 
