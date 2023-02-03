@@ -1,4 +1,62 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {# {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default("S'inscrire") }}</button> #}
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-6">
+            <div class="form-row">
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.lastName, 'Nom') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.lastName , { 'attr': {'class': 'w-100'} }) }}</div>
+                    {{ form_errors(form.lastName) }}
+                </div>
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3 ">{{ form_label(form.firstName, 'Prenom') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9 ">{{ form_widget(form.firstName , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.firstName) }}
+                </div>
+                
+               <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.email, 'Email') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.email , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.email, {'attr': {'class': 'color-red'}}) }}
+                </div>
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.password, 'Mot de passe') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.password , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.password, {'attr': {'class': 'color-red'}}) }}
+                </div>
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.adress, 'Adresse') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.adress , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.adress) }}
+                </div>
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.city, 'Ville') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.city , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.city) }}
+                </div>
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-12 col-sm-3 col-md-3">{{ form_label(form.zipCode, 'Code postal') }}</div>
+                    <div class="col-12 col-sm-9 col-md-9">{{ form_widget(form.zipCode , { 'attr': {'class': 'w-100'}}) }}</div>
+                    {{ form_errors(form.zipCode) }}
+                </div>  
+
+                <div class="form-group col-md-12 mb-3 mb-sm-2  row">
+                    <div class="col-md-3">&nbsp;</div>
+                    <div class="col-md-3"><button type="submit" class="btn btn-primary w-100">{{ button_label|default("S'inscrire") }}</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" d-none d-sm-none  d-md-block col-md-6 ">
+            <img src="/images/BDboom.png" style="width:100%;" />
+        </div>
+    </div>
+
+
 {{ form_end(form) }}

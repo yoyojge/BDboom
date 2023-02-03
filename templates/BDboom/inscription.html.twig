@@ -3,10 +3,13 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-<div id="myCarouselInner" >
-    <h1>Inscrivez-vous</h1>
+<main>
+    <div id="myCarouselInner" >
+        <div class="container marketing"> 
+            <h1>Inscrivez-vous</h1>
 
-    {{ include('user/_form.html.twig') }}
-
-</div>  
+            {{ include('user/_form.html.twig') }}
+        </div>
+    </div> 
+</main> 
 {% endblock %}
