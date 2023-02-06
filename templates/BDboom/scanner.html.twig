@@ -31,7 +31,16 @@
 </main>
 
 <script>
-    /** Ugly function to write the results to a table dynamically. */
+function docReady(fn) {
+    // see if DOM is already available
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        // call on next available tick
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+/** Ugly function to write the results to a table dynamically. */
 function printScanResultPretty(codeId, decodedText, decodedResult) {
 	let resultSection = document.getElementById('scanned-result');
     let tableBodyId = "scanned-result-table-body";
@@ -70,7 +79,11 @@ function printScanResultPretty(codeId, decodedText, decodedResult) {
     trow.appendChild(td3);
     tbody.appendChild(trow);
 }
-    function onScanSuccess(decodedText, decodedResult) {
+docReady(function() {
+	hljs.initHighlightingOnLoad();
+	var lastMessage;
+	var codeId = 0;
+	function onScanSuccess(decodedText, decodedResult) {
         /**
          * If you following the code example of this page by looking at the
          * source code of the demo page - good job!!
@@ -83,7 +96,6 @@ function printScanResultPretty(codeId, decodedText, decodedResult) {
             ++codeId;
 		}
 	}
-
     var qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
         // Square QR Box, with size = 80% of the min edge.
         var minEdgeSizeThreshold = 250;
@@ -119,7 +131,6 @@ function printScanResultPretty(codeId, decodedText, decodedResult) {
         });
 	html5QrcodeScanner.render(onScanSuccess);
 });
-
 </script>
 
     
