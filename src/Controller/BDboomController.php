@@ -96,9 +96,15 @@ class BDboomController extends AbstractController
             // $this->session->set('sessKeywordSearch', $bdsearch);
 
             //TODO:recherche dans BDboom
-            $arrayOfObjectsBDboom = $albumRepository->findByKeyword($bdsearch);        
-            $listItemsBDboom = $BDboomRepository->objectToArray($arrayOfObjectsBDboom);
+            $arrayOfObjectsBDboom = $albumRepository->findByKeyword($bdsearch);  
+            if(!empty($arrayOfObjectsBDboom)){
+                $listItemsBDboom = $BDboomRepository->objectToArray($arrayOfObjectsBDboom);
             // dd($listItemsBDboom);
+            }  
+            else{
+                $listItemsBDboom = "";
+            }    
+            
 
             //recherche avec API amazon        
             $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
