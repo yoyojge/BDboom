@@ -29,6 +29,7 @@
     </div>
 
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
 <script>
 function docReady(fn) {
@@ -80,7 +81,7 @@ function printScanResultPretty(codeId, decodedText, decodedResult) {
     tbody.appendChild(trow);
 }
 docReady(function() {
-	/*hljs.initHighlightingOnLoad();*/
+	hljs.initHighlightingOnLoad();
 	var lastMessage;
 	var codeId = 0;
 	function onScanSuccess(decodedText, decodedResult) {
