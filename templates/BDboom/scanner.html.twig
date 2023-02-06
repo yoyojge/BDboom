@@ -52,6 +52,7 @@ let isbnArray = [];
 
 function onScanSuccess(decodedText, decodedResult) {
     console.log(`Code scanned = ${decodedText}`, decodedResult);
+    console.log("ds le tableau :: "+isbnArray.indexOf(decodedText) );
     //isbnArray[]= ${decodedText};
     if( isbnArray.indexOf(decodedText) === -1){
         console.log("deja scanné"+" ds le tableau :: "+isbnArray.indexOf(decodedText) );
