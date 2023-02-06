@@ -53,12 +53,18 @@ let isbnArray = [];
 function onScanSuccess(decodedText, decodedResult) {
     console.log(`Code scanned = ${decodedText}`, decodedResult);
     //isbnArray[]= ${decodedText};
-    isbnArray.push(decodedText);
+    if( fruits.indexOf('Banana') !=""){
+        console.log("deja scanné");
+    }
+    else{
+        isbnArray.push(decodedText);
+    }
+    
 
     result="";
     
     for (const element of isbnArray) {
-        {# console.log(element); #}
+        //console.log(element); 
         result += element+'<br />';
     }
     document.getElementById("result").innerHTML = result;
