@@ -39,15 +39,30 @@
     <div id="myCarouselInner" >
 
         <div id="qr-reader" style="width: 600px"></div>
-
+        <div id="result"></div>
     </div>
 
 </main>
 
 <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
 <script>
+
+
+let isbnArray = [];
+
 function onScanSuccess(decodedText, decodedResult) {
     console.log(`Code scanned = ${decodedText}`, decodedResult);
+    isbnArray[]= ${decodedText};
+
+    result="";
+    
+    for (const element of isbnArray) {
+        console.log(element);
+        result += element+'<br />';
+    }
+    document.getElementById("result").innerHtml = result;
+
+
 }
 var html5QrcodeScanner = new Html5QrcodeScanner(
 	"qr-reader", { fps: 10, qrbox: 250 });
