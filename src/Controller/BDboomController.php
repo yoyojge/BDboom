@@ -441,5 +441,12 @@ class BDboomController extends AbstractController
         return $this->render('BDboom/cupu.html.twig', [  ]);
     }
 
+    // PAGE SCANNER
+    #[Route('/scanner', name: 'app_BDboom_scanner', methods: ['GET'])]
+    public function scanner(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
+    {
+        return $this->render('BDboom/scanner.html.twig', [  ]);
+    }
+
     
 }
