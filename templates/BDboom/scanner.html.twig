@@ -39,7 +39,7 @@
     <div id="myCarouselInner" >
 
         <div id="qr-reader" style="width: 600px"></div>
-        <div id="result"></div>
+        <div id="result">result</div>
     </div>
 
 </main>
@@ -58,10 +58,10 @@ function onScanSuccess(decodedText, decodedResult) {
     result="";
     
     for (const element of isbnArray) {
-        console.log(element);
+        {# console.log(element); #}
         result += element+'<br />';
     }
-    document.getElementById("result").innerHtml = result;
+    document.getElementById("result").innerHTML = result;
 
 
 }
