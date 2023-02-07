@@ -24,7 +24,7 @@ let maxcarouselItemHeight = 512;
 function initTop(){
 
   bdbnavHeight = document.getElementById('bdbnav').offsetHeight;
-  document.getElementById('myCarouselInner').style.marginTop = bdbnavHeight+'px';
+  document.getElementById('myCarouselInner').style.paddingTop = bdbnavHeight+'px';
   
   const carouselItem = document.querySelectorAll('.carousel-item');
 
