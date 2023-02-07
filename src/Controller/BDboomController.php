@@ -443,9 +443,21 @@ class BDboomController extends AbstractController
 
     // PAGE SCANNER
     #[Route('/scanner', name: 'app_BDboom_scanner', methods: ['GET'])]
-    public function scanner(UserRepository $userRepository, BDboomRepository $BDboomRepository): Response
+    public function scanner(UserRepository $userRepository, BDboomRepository $BDboomRepository,CollectionnRepository $collectionnRepository): Response
     {
-        return $this->render('BDboom/scanner.html.twig', [  ]);
+        
+        //on recupere les collections du user coonnecte
+        $user = $this->getUser();
+        //ca marche pas ...
+        // $collectionsUser = $user->getCollectionns();
+        
+        $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
+        
+        return $this->render('BDboom/scanner.html.twig', [
+            'collectionns' => $collectionns,
+        ]);
+        
+        
     }
 
     

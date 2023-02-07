@@ -21,6 +21,29 @@
         <div id="result">result</div>
     </div>
 
+
+
+    <form action="{{ path('app_BDboom_addListISBNToCollection') }}" method="POST">
+        
+        <input type="hidden" id="arrayIsbn" name="arrayIsbn" value="">
+       
+        <div>
+            <select name="collectionn" id="collectionn">
+            {% for collectionn in collectionns %}
+                <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div><button type="submit">Ajouter à ma collection</button></div>
+
+    </form>   
+
+
+
+
+
+
+
 </main>
 
 {# <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script> #}
@@ -53,6 +76,9 @@ function onScanSuccess(decodedText, decodedResult) {
         result += element+'<br />';
     }
     document.getElementById("result").innerHTML = result;
+
+    isbnJson = JSON.stringify(isbnArray);
+    document.getElementById("arrayIsbn").value = isbnJson;
 
 
 }
