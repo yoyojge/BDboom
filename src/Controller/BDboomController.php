@@ -460,5 +460,32 @@ class BDboomController extends AbstractController
         
     }
 
+    // PAGE ajout des bd scannées
+    #[Route('/addSscan', name: 'app_BDboom_addListISBNToCollection', methods: ['GET', 'POST'])]
+    public function scanner(UserRepository $userRepository, BDboomRepository $BDboomRepository,CollectionnRepository $collectionnRepository): Response
+    {
+        
+        //on recupere les collections du user coonnecte
+        $user = $this->getUser();
+        //ca marche pas ...
+        // $collectionsUser = $user->getCollectionns();
+        
+        $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
+        
+        return $this->render('BDboom/scanner.html.twig', [
+            'collectionns' => $collectionns,
+        ]);
+        
+        
+    }
+
+
+
+
+
+
+
+
+
     
 }
