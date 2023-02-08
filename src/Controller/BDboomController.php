@@ -73,13 +73,14 @@ class BDboomController extends AbstractController
 
 
 
-    // PAGE LISTE :: de resultat apres formulaire de recherche du header
+    // PAGE LISTE :: de resultat apres formulaire de recherche du header 
+    // ou ajout depuis la page liste ou detail
     #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['GET','POST'])]
     public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
     {        
 
-
         if(!empty( $this->session->get('listItemsBDboom', [])  )){
+            
             //si on vient de ajouter a la collection depuis la page liste
             $listItemsBDboom = $this->session->get('listItemsBDboom', []);
             $this->session->set('listItemsBDboom', ''); 
@@ -90,25 +91,23 @@ class BDboomController extends AbstractController
             $listItemsGGbook = $this->session->get('listItemsGGbook', []);
             $this->session->set('listItemsGGbook', ''); 
 
-            $bdsearch =$this->session->get('bdsearch', []);
-            $this->session->set('bdsearch', ''); 
+            $bdsearch =$this->session->get('bdsearch', []);             
+            
         }  
         else{
-            //depuis la page detail
+            
+            //depuis le formulaire de recherche
             //recuperation de la requete de recherche et enregistrement dans une session
             $bdsearch =$request->get('bdsearch');
-            // $this->session->set('sessKeywordSearch', $bdsearch);
-
-            //TODO:recherche dans BDboom
+            
+            //recherche dans BDboom
             $arrayOfObjectsBDboom = $albumRepository->findByKeyword($bdsearch);  
             if(!empty($arrayOfObjectsBDboom)){
                 $listItemsBDboom = $BDboomRepository->objectToArray($arrayOfObjectsBDboom);
-            // dd($listItemsBDboom);
             }  
             else{
                 $listItemsBDboom = "";
-            }    
-            
+            }                
 
             //recherche avec API amazon        
             $listItemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($bdsearch);
@@ -123,7 +122,7 @@ class BDboomController extends AbstractController
             // dd($listItemsGGbook);     
         }  
 
-        //on recupere les collections du user coonecte
+        //on recupere les collections du user connecté
         $user = $this->getUser();
         $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
 
@@ -165,7 +164,6 @@ class BDboomController extends AbstractController
             $detailBook = json_decode($request->request->get('detailLivre'), true);  
         }      
 
-
         //on recupere les collections du user coonnecte
         $user = $this->getUser();
         //ca marche pas ...
@@ -188,6 +186,7 @@ class BDboomController extends AbstractController
 
 
     // AJOUTER UN LIVRE A SA COLLECTION ou SA WISHLIST :: mutualisation de la fonction
+    //depuis la page liste oue la page detail
     #[Route('/addItemToCollectionOrWishlist', name: 'app_BDboom_addItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
     public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, MessageGenerator $messageGenerator, BDboomService $BDboomService): Response
     {       
@@ -267,7 +266,11 @@ class BDboomController extends AbstractController
             $splitUrl = explode("detail/", $previousUrl);
             $myUrlParam = explode("/", $splitUrl[1]);
         
-            return $this->redirectToRoute('app_BDboom_detail', ['product'=>$myUrlParam[0] , 'id' => $myUrlParam[1] ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_BDboom_detail', [
+                'product'=>$myUrlParam[0] , 
+                'id' => $myUrlParam[1] 
+            ],
+            Response::HTTP_SEE_OTHER);
         }
 
         //page liste
