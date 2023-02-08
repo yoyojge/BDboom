@@ -9,6 +9,16 @@
 
     <div id="myCarouselInner" >
 
+        {#  message flash collection ajoutée #}
+        {% for message in app.flashes('albumAjout') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+
+
+
+
         {{ include('/BDboom/listeResultatBDboom.html.twig') }} 
     
         {{ include('/BDboom/listeResultatAmazon.html.twig') }}  

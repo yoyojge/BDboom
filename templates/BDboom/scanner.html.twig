@@ -17,29 +17,38 @@
 
     <div id="myCarouselInner" >
 
-        <div id="qr-reader"></div>
-        <div id="result">result</div>
-    </div>
-
-
-
-    <form action="{{ path('app_BDboom_addListISBNToCollection') }}" method="POST">
-        
-        <input type="hidden" id="arrayIsbn" name="arrayIsbn" value="">
-       
-        <div>
-            <select name="collectionn" id="collectionn">
-            {% for collectionn in collectionns %}
-                <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
-            {% endfor %}
-            </select>
+        {#  message flash collection ajoutée #}
+        {% for message in app.flashes('albumAjout') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
         </div>
-        <div><button type="submit">Ajouter à ma collection</button></div>
-
-    </form>   
+        {% endfor %}
 
 
+        <div>
 
+            <div id="qr-reader"></div>
+            <div id="result">result</div>
+
+        </div> 
+
+        <form action="{{ path('app_BDboom_addListISBNToCollection') }}" method="POST">
+            
+            <input type="hidden" id="arrayIsbn" name="arrayIsbn" value='["9782203001176","9782800143750"]'>
+        
+            <div>
+                <select name="collectionn" id="collectionn">
+                {% for collectionn in collectionns %}
+                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div><button type="submit">Ajouter à ma collection</button></div>
+
+        </form>   
+
+
+    </div>
 
 
 

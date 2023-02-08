@@ -3,6 +3,30 @@
 namespace App\Repository;
 
 
+use App\Entity\User;
+use App\Entity\Album;
+use App\Form\UserType;
+use App\Entity\Wishlist;
+use App\Entity\Collectionn;
+use App\Entity\AlbumWishlist;
+use App\Entity\AlbumCollection;
+use App\Repository\UserRepository;
+use App\Repository\AlbumRepository;
+use App\Repository\BDboomRepository;
+use App\Repository\WishlistRepository;
+
+use App\Repository\CollectionnRepository;
+use App\Repository\AlbumWishlistRepository;
+use App\Repository\AlbumCollectionRepository;
+use App\Repository\BDboomAPIsearchRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 // use App\Entity\Album;
 // use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 // use Doctrine\Persistence\ManagerRegistry;
@@ -118,119 +142,9 @@ class BDboomRepository
     }
 
 
+    
 
-
-    // function bookInfo($sessSearchDetail, $sessSearchFrom){
-
-    //     //si from BDboom
-    //     if($sessSearchFrom == "BDboom"){
-            
-    //     }
-
-    //     //si from Amazon
-    //     if($sessSearchFrom == "amazon"){
-           
-    //         $title = $sessSearchDetail['itemInfo']['title']['displayValue'];
-    //         $arrayBookInfo['title']  = $title;
-           
-    //         //detail
-    //         if(!empty($sessSearchDetail['itemInfo']['features'])){
-    //             $description = $sessSearchDetail['itemInfo']['features'];                
-    //         }
-    //         else{
-    //             $description = "no description";
-    //         }
-    //         $arrayBookInfo['description']  = $description;
-
-    //         //isbn
-    //         if(!empty($sessSearchDetail['itemInfo']['externalIds']['iSBNs'])){
-    //             $isbn = $sessSearchDetail['itemInfo']['externalIds']['iSBNs']['displayValues'][0];
-    //         }
-    //         else{
-    //             $isbn = "no isbn";
-    //         }
-    //         $arrayBookInfo['isbn']  = $isbn;
-
-    //         //image
-    //         if(!empty($sessSearchDetail['images']['primary']['large'])){
-    //             $coverOnline = $sessSearchDetail['images']['primary']['large']['uRL'];
-    //         }
-    //         else{
-    //             $coverOnline = "no cover";
-    //         }
-    //         $arrayBookInfo['coverOnline']  = $coverOnline;
-
-    //         //author
-    //         if(!empty($sessSearchDetail['itemInfo']['byLineInfo']['contributors'])){
-    //             $authors = $sessSearchDetail['itemInfo']['byLineInfo']['contributors'][0];                
-    //         }
-    //         else{
-    //             $authors = "";
-    //         }  
-    //         $arrayBookInfo['authors']  = $authors;
-
-    //         $refBDfugue = ""; 
-    //         $arrayBookInfo['refBDfugue']  = $refBDfugue;
-
-    //         $refAmazone = $sessSearchDetail['aSIN']; 
-    //         $arrayBookInfo['refAmazone']  = $refAmazone;        
-    //     }
-
-
-    //     //si from GGbook
-    //     if($sessSearchFrom == "ggbook"){
-            
-    //         $title = $sessSearchDetail['volumeInfo']['title']; 
-    //         $arrayBookInfo['title']  = $title;           
-            
-    //         //detail
-    //         if(!empty($sessSearchDetail['volumeInfo']['description'])){
-    //             $description = $sessSearchDetail['volumeInfo']['description'];
-    //         }
-    //         else{
-    //             $description = "no description";
-    //         }
-    //         $arrayBookInfo['description']  = $description;
-
-    //         //isbn
-    //         if(!empty($sessSearchDetail['volumeInfo']['industryIdentifiers'])){
-    //             $isbn = $sessSearchDetail['volumeInfo']['industryIdentifiers'][0]['identifier'];
-    //         }
-    //         else{
-    //             $isbn = "no isbn";
-    //         }
-    //         $arrayBookInfo['isbn']  = $isbn;
-
-    //         //image
-    //         if(!empty($sessSearchDetail['volumeInfo']['imageLinks'])){
-    //             $coverOnline = $sessSearchDetail['volumeInfo']['imageLinks']['thumbnail'];
-    //         }
-    //         else{
-    //             $coverOnline = "no cover";
-    //         }
-    //         $arrayBookInfo['coverOnline']  = $coverOnline;
-
-    //         //author
-    //         if(!empty($sessSearchDetail['volumeInfo']['authors'])){
-    //             $authors = $sessSearchDetail['volumeInfo']['authors'][0];                
-    //         }
-    //         else{
-    //             $authors = "";
-    //         }  
-    //         $arrayBookInfo['authors']  = $authors;
-
-    //         $refBDfugue = ""; 
-    //         $arrayBookInfo['refBDfugue']  = $refBDfugue;
-
-    //         $refAmazone = ""; 
-    //         $arrayBookInfo['refAmazone']  = $refAmazone;                        
-            
-    //     }
-
-
-    //     return $arrayBookInfo;
-
-    // }
+    
 
    
 }

@@ -9,6 +9,10 @@ use App\Entity\Wishlist;
 use App\Entity\Collectionn;
 use App\Entity\AlbumWishlist;
 use App\Entity\AlbumCollection;
+
+use App\Service\BDboomService;
+use App\Service\MessageGenerator;
+
 use App\Repository\UserRepository;
 use App\Repository\AlbumRepository;
 use App\Repository\BDboomRepository;
@@ -185,7 +189,7 @@ class BDboomController extends AbstractController
 
     // AJOUTER UN LIVRE A SA COLLECTION ou SA WISHLIST :: mutualisation de la fonction
     #[Route('/addItemToCollectionOrWishlist', name: 'app_BDboom_addItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
-    public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
+    public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, MessageGenerator $messageGenerator, BDboomService $BDboomService): Response
     {       
         
         $addTo = $request->request->get('addTo');
@@ -195,73 +199,44 @@ class BDboomController extends AbstractController
         $this->session->set('bdsearch', $bdsearch);
 
         $arrayBookInfo = json_decode($request->request->get('infoDetailArray'), true);
-        
-        // dd($arrayBookInfo);
-
-        //date
-        $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));       
+           
         
         //on verifie si le livre n'est pas deja en BDD ::  (recherche par isbn) ET si isbn different de no isbn, 
         //eventuellement rechercher par ref amazon ou ref google book
-        if( $arrayBookInfo['isbn'] != "no isbn"){
-            $trouve = $albumRepository->findBy( array('isbn' => $arrayBookInfo['isbn'] ));
-        }        
-        if(empty($trouve)){
-            $trouve = $albumRepository->findBy( array('title' => $arrayBookInfo['title'] ));
-        }           
+        //appel au service
+        $trouve =  $BDboomService->searchInBDboom($arrayBookInfo);
+
+        // $message = $messageGenerator->getHappyMessage();       
         
-        //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
         if(empty($trouve)){
-
-            //on enregistre l'image sur le serveur ::  que si pas deja existant
-            $newPathCover = $BDboomRepository->imageLoad($arrayBookInfo['cover']);
-
-            $album = new Album;
-            $album->setTitle($arrayBookInfo['title']);
-            $album->setCover($newPathCover);
-            $album->setDescription($arrayBookInfo['description']);
-            $album->setRefBDfugues($arrayBookInfo['refBDfugue']);
-            $album->setRefAmazon($arrayBookInfo['refAmazone']);
-            $album->setIsbn($arrayBookInfo['isbn']);
-            $album->setKeyword( $bdsearch." ".$arrayBookInfo['title'] );
-            $album->setAuthor($arrayBookInfo['author']);
-            $album->setBDboomDate($Now);
-            $album->setOrigine( $addTo );
-
-            $albumRepository->save($album, true);   
-            
-            //recuperer l'id du nouveau livre
-            $albumID = $album->getId();         
-
+            //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
+            //on enregistre l'image sur le serveur ::  que si pas deja existant                      
+            //on recupere l'id du nouveau livre qui vient d'être enregistré
+            $albumID =  $BDboomService->saveInBDboom($arrayBookInfo, $bdsearch, $addTo);  
         }
         else{
-             //recuperer l'id du livre deja en BDD
+            //si le livre deja en BDD
+            //on recupere l'id du livre
             $albumID = $trouve[0]->getId();
         }      
 
-        // dd($addTo);
-
-        
+              
         //on enregistre le livre dans la collection du user
         if($addTo == "collection"){
-            //recuperer l'id de la collection        
-            $collectionnIdSelected = $request->request->get('collectionn');        
-
-            $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
-            $collectionObj = $collectionnRepository->findOneBy( array('id' => $collectionnIdSelected ));
-
-            $albumObj->addCollectionn($collectionObj);
-
-            $albumRepository->save($albumObj, true);       
+            //on recupere l'id de la collection , puis on en deduire l'instance de l'objet collection     
+            $collectionnIdSelected = $request->request->get('collectionn');   
+           
+            //appel du service
+            $BDboomService->addAnIdBookToAnIdCollection($collectionnIdSelected,$albumID );
 
             //ajout d'un message flash
             $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre collection');
             
         }
 
+        //on enregistre le livre dans la wishlist du user
         if($addTo == "wishlist"){
- 
-            // $wishlist = new Wishlist;
+            // on recupere l'instance de l'objet wishlist
             $user = $this->getUser();        
             $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);                 
     
@@ -445,12 +420,8 @@ class BDboomController extends AbstractController
     #[Route('/scanner', name: 'app_BDboom_scanner', methods: ['GET'])]
     public function scanner(UserRepository $userRepository, BDboomRepository $BDboomRepository,CollectionnRepository $collectionnRepository): Response
     {
-        
-        //on recupere les collections du user coonnecte
+ 
         $user = $this->getUser();
-        //ca marche pas ...
-        // $collectionsUser = $user->getCollectionns();
-        
         $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
         
         return $this->render('BDboom/scanner.html.twig', [
@@ -461,17 +432,46 @@ class BDboomController extends AbstractController
     }
 
     // PAGE ajout des bd scannées
-    #[Route('/addSscan', name: 'app_BDboom_addListISBNToCollection', methods: ['GET', 'POST'])]
-    public function app_BDboom_addListISBNToCollection(UserRepository $userRepository, BDboomRepository $BDboomRepository,CollectionnRepository $collectionnRepository): Response
-    {
+    #[Route('/addSscan', name: 'app_BDboom_addListISBNToCollection', methods: ['POST'])]
+    public function app_BDboom_addListISBNToCollection(BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, BDboomService $BDboomService,CollectionnRepository $collectionnRepository ): Response
+    {        
+        $collectionnIdSelected = $request->request->get('collectionn');
         
-        //on recupere les collections du user coonnecte
+        $arrayIsbn = $request->request->get('arrayIsbn');
+        $arrayIsbn = json_decode($arrayIsbn);
+        $bdsearch = "";
+        $addTo = "scan";
+
+        //on boucle sur les elements scannées
+        foreach ($arrayIsbn as $isbn) {            
+
+            //on recupere l'info du livre retrouvé par le isbn
+            $itemsAmazonBrut = $BDboomAPIsearchRepository->APIsearchAmazon($isbn);
+            $arrayBookInfoAmazon = $BDboomAPIsearchRepository->APIcleanAmazonData($itemsAmazonBrut);                
+            $arrayBookInfo =  $arrayBookInfoAmazon[0];
+           
+            $trouve =  $BDboomService->searchInBDboom($arrayBookInfo);
+            // dd($trouve);
+
+            if(empty($trouve)){
+                $albumID =  $BDboomService->saveInBDboom($arrayBookInfo, $bdsearch, $addTo);  
+            }
+            else{
+                $albumID = $trouve[0]->getId();
+            }     
+            //appel du service
+            $BDboomService->addAnIdBookToAnIdCollection($collectionnIdSelected,$albumID );
+            
+        }
+        
+        //ajout d'un message flash
+        $this->addFlash('albumAjout', 'Bravo, la sélection a été ajoutée à votre collection');
+
+
+        // dd($collectionn, $arrayIsbn);
         $user = $this->getUser();
-        //ca marche pas ...
-        // $collectionsUser = $user->getCollectionns();
-        
         $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
-        
+
         return $this->render('BDboom/scanner.html.twig', [
             'collectionns' => $collectionns,
         ]);
