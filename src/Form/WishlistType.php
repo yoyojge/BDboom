@@ -13,7 +13,7 @@ class WishlistType extends AbstractType
     {
         $builder
             ->add('wishlistName')
-            ->add('collector')
+            // ->add('collector')
         ;
     }
 

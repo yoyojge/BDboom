@@ -182,6 +182,90 @@ class BDboomController extends AbstractController
 
 
 
+    
+    #[Route('/wishlistToCollection', name: 'app_BDboom_wishlistToCollection', methods: ['GET', 'POST'])]
+    public function wishlistToCollection( Request $request, BDboomService $BDboomService): Response
+    {       
+        //on recupere l'album
+        $albumID = $request->request->get('albumId');
+
+        //on recupere la wishlist
+        $wishlistId = $request->request->get('wishlistId');
+
+        //on recupere la collection
+        $collectionnIdSelected = $request->request->get('collectionn'); 
+
+        // dd($albumID, $wishlistId, $collectionnIdSelected);
+
+        //on supprime l'album de la wishlist
+        $BDboomService->suppAnIdBookToAnIdWishlist($wishlistId,$albumID );
+
+        //on ajoute le livre a la collection
+        $BDboomService->addAnIdBookToAnIdCollection($collectionnIdSelected,$albumID );
+
+        //ajout d'un message flash
+        $this->addFlash('albumAjout', 'Bravo, l album est passé de votre wishlist à votre collection');
+
+        //on retourne sur la wishlist
+        return $this->redirectToRoute('app_wishlist_show', [             
+            'id' =>$wishlistId
+        ],
+        Response::HTTP_SEE_OTHER);
+
+    }
+
+
+
+
+    // SUPPRIMER UN LIVRE DE SA COLLECTION ou SA WISHLIST :: mutualisation de la fonction
+    //depuis la page liste oue la page detail
+    #[Route('/suppItemToCollectionOrWishlist', name: 'app_BDboom_suppItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
+    public function suppItemToCollection( Request $request, BDboomService $BDboomService): Response
+    {       
+        
+        $albumID = $request->query->get('idAlbum');
+
+        if( !empty($request->query->get('idCollection'))){
+            $collectionnIdSelected = $request->query->get('idCollection');      
+
+            //ajout d'un message flash
+            $this->addFlash('albumAjout', 'Bravo, l album a été retiré de votre collection');
+
+            $BDboomService->suppAnIdBookToAnIdCollection($collectionnIdSelected,$albumID );
+
+            return $this->redirectToRoute('app_collectionn_show', [             
+                'id' =>$collectionnIdSelected
+            ],
+            Response::HTTP_SEE_OTHER);
+        }
+
+        if( !empty($request->query->get('idWishlist'))){
+            $wishlistIdSelected = $request->query->get('idWishlist');      
+
+            //ajout d'un message flash
+            $this->addFlash('albumAjout', 'Bravo, l album a été retiré de votre Wishlist');
+
+            $BDboomService->suppAnIdBookToAnIdWishlist($wishlistIdSelected,$albumID );
+
+            return $this->redirectToRoute('app_wishlist_show', [             
+                'id' =>$wishlistIdSelected
+            ],
+            Response::HTTP_SEE_OTHER);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

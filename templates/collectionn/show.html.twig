@@ -6,6 +6,14 @@
 
 <main>
 <div id="myCarouselInner" >
+
+    {#  message flash collection ajoutée #}
+        {% for message in app.flashes('albumAjout') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+
     <h1>Collectionn</h1>
 
     <table class="table">
@@ -29,7 +37,7 @@
             <tr>
                 <th>Id</th>
                 <th>Album</th>
-                {# <th>actions</th> #}
+                <th>actions</th>
             </tr>
         </thead>
         <tbody>
@@ -39,8 +47,9 @@
                 <td>{{ album.id }}</td>
                 <td>{{ album.title }}</td>
                 <td>
-                    <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">show</a>
-                    <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a>
+                    <a href="{{ path('app_album_show', {'id': album.id , 'idCollection': collectionn.id}) }}">show</a>
+                    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idCollection': collectionn.id}) }}">retirer</a>
+                    {# <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a> #}
                 </td>
             </tr>
         {% else %} 
@@ -55,7 +64,7 @@
 
 
 
-    <a href="{{ path('app_collectionn_index') }}">back to list</a>
+    {# <a href="{{ path('app_collectionn_index, { collectionn.id }') }}">back to list</a> #}
 
     {# <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a> #}
 

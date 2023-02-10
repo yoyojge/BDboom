@@ -40,13 +40,38 @@ class AlbumController extends AbstractController
         ]);
     }
 
+
+
+
+
     #[Route('/{id}', name: 'app_album_show', methods: ['GET'])]
-    public function show(Album $album): Response
+    public function show(Request $request, Album $album): Response
     {
-        return $this->render('album/show.html.twig', [
-            'album' => $album,
-        ]);
+        
+        if( !empty($request->query->get('idCollection'))){
+            $collectionnIdSelected = $request->query->get('idCollection');  
+        
+            return $this->render('album/show.html.twig', [
+                'album' => $album,
+                'collectionId' => $collectionnIdSelected
+            ]);
+        }
+
+        if( !empty($request->query->get('idWishlist'))){
+            $wishlistIdSelected = $request->query->get('idWishlist');  
+        
+            return $this->render('album/show.html.twig', [
+                'album' => $album,
+                'wishlistId' => $wishlistIdSelected
+            ]);
+        }
+       
     }
+
+
+
+
+
 
     #[Route('/{id}/edit', name: 'app_album_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Album $album, AlbumRepository $albumRepository): Response

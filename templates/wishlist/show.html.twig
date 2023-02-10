@@ -34,7 +34,7 @@
             <tr>
                 <th>Id</th>
                 <th>album</th>
-                {# <th>actions</th> #}
+                <th>actions</th>
             </tr>
         </thead>
         <tbody>
@@ -43,10 +43,33 @@
             <tr>
                 <td>{{ album.id }}</td>
                 <td>{{ album.title }}</td>
-                {# <td>
-                    <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">show</a>
-                    <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">edit</a>
-                </td> #}
+                <td>
+                    <a href="{{ path('app_album_show', {'id': album.id , 'idWishlist': wishlist.id}) }}">show</a>
+
+                    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idWishlist': wishlist.id}) }}">retirer</a>
+
+                    {% if album.refAmazon is defined and album.refAmazon is not null %}
+                    <a href="https://www.amazon.fr/dp/{{album.refAmazon}}?tag=bdboom04-21" target="_blank">acheter sur Amazon</a>
+                    {% endif %}
+
+                    {# <a href="{{ path('app_BDboom_wishlistToCollection', {'idAlbum': album.id, 'idWishlist': wishlist.id}) }}">ajouter a une collection</a> #}
+
+                    <form action="{{ path('app_BDboom_wishlistToCollection') }}" method="POST">
+                        <select name="collectionn" id="collectionn">
+                        {% for collectionn in collectionns %}
+                            <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                        {% endfor %}
+                        </select>
+                        
+                        <input type="hidden" id="albumId" name="albumId" value="{{ album.id }}">
+                        <input type="hidden" id="wishlistId" name="wishlistId" value="{{ wishlist.id }}">
+
+                        <button type="submit">Deplacer dans une collection</button>
+                        
+                    </form>
+
+                    {# {{ dump(album) }} #}
+                </td>
             </tr>
              {% else %}
                 <tr>
@@ -59,11 +82,11 @@
 
 
 
-    <a href="{{ path('app_wishlist_index') }}">back to list</a>
+    {# <a href="{{ path('app_wishlist_index') }}">back to list</a>
 
     <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">edit</a>
 
-    {{ include('wishlist/_delete_form.html.twig') }}
+    {{ include('wishlist/_delete_form.html.twig') }} #}
 
 
     </div>

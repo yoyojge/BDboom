@@ -66,6 +66,7 @@
                                 <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
                             {% endfor %}
                             </select>
+                            
                         </form>                        
                     </div>
                     
@@ -82,9 +83,17 @@
                     {% endif %}                    
                     
                     {# si amazon bouton acheter #}
-                    {% if detailBook.detailPageUrl is not null or detailBook.detailPageUrl is not empty %}
+                    {# {% if detailBook.detailPageUrl is not null or detailBook.detailPageUrl is not empty %} #}
+                    {% if detailBook.refAmazone is defined and detailBook.refAmazone is not null %}
                     <div class="myt ">
-                        <button type="button" class="btn btn-outline-warning"><a href="{{ detailBook.detailPageUrl }}">Acheter sur Amazon {{ detailBook.price }}</a></button>
+                        <button type="button" class="btn btn-outline-warning">
+                            <a href="https://www.amazon.fr/dp/{{detailBook.refAmazone}}?tag=bdboom04-21">
+                            Acheter sur Amazon 
+                            {% if detailBook.price is defined and detailBook.price is not null %}
+                            {{ detailBook.price }}
+                            {% endif %}
+                            </a>
+                        </button>
                     </div>  
                     {% endif %}
 

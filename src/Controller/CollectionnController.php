@@ -91,10 +91,15 @@ class CollectionnController extends AbstractController
         $form = $this->createForm(CollectionnType::class, $collectionn);
         $form->handleRequest($request);
 
+        // dd($collectionn);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $collectionnRepository->save($collectionn, true);
 
-            return $this->redirectToRoute('app_collectionn_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_collectionn_show', [
+                'id' => $collectionn->getId(),
+            ], 
+            Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('collectionn/edit.html.twig', [

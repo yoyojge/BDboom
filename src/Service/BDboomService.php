@@ -7,6 +7,7 @@ use App\Entity\Album;
 use App\Repository\AlbumRepository;
 // use Psr\Container\ContainerInterface;
 use App\Repository\BDboomRepository;
+use App\Repository\WishlistRepository;
 use App\Repository\CollectionnRepository;
 use App\Repository\AlbumCollectionRepository;
 
@@ -16,12 +17,13 @@ class BDboomService {
      private $albumCollectionRepository;
      private $albumRepository;
 
-     public function __construct( AlbumRepository $albumRepository, AlbumCollectionRepository $albumCollectionRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository) 
+     public function __construct( AlbumRepository $albumRepository, AlbumCollectionRepository $albumCollectionRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository) 
      {
           $this->albumCollectionRepository = $albumCollectionRepository;
           $this->albumRepository = $albumRepository;
           $this->BDboomRepository = $BDboomRepository;
           $this->collectionnRepository = $collectionnRepository;
+          $this->wishlistRepository = $wishlistRepository;
           
      }
  
@@ -83,6 +85,34 @@ class BDboomService {
           $albumObj = $this->albumRepository->findOneBy( array('id' => $albumID ));            
 
           $albumObj->addCollectionn($collectionObj);
+          $this->albumRepository->save($albumObj, true); 
+     }
+
+
+
+
+     public function suppAnIdBookToAnIdCollection($collectionnIdSelected, $albumID) 
+     {
+             
+          $collectionObj = $this->collectionnRepository->findOneBy( array('id' => $collectionnIdSelected ));     
+
+          $albumObj = $this->albumRepository->findOneBy( array('id' => $albumID ));            
+
+          $albumObj->removeCollectionn($collectionObj);
+          $this->albumRepository->save($albumObj, true); 
+     }
+
+
+
+
+     public function suppAnIdBookToAnIdWishlist($wishlistIdSelected, $albumID) 
+     {
+             
+          $wishlistObj = $this->wishlistRepository->findOneBy( array('id' => $wishlistIdSelected ));     
+
+          $albumObj = $this->albumRepository->findOneBy( array('id' => $albumID ));            
+
+          $albumObj->removeWishlist($wishlistObj);
           $this->albumRepository->save($albumObj, true); 
      }
 

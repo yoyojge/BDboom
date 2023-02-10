@@ -3,6 +3,9 @@
 {% block title %}Album{% endblock %}
 
 {% block body %}
+
+<main>
+<div id="myCarouselInner" >
     <h1>Album</h1>
 
     <table class="table">
@@ -38,9 +41,31 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_album_index') }}">back to list</a>
+    
+                    
+    {# si on vient d'une collection #}
+    {% if collectionId is defined and collectionId is not null %}
 
-    <a href="{{ path('app_album_edit', {'id': album.id}) }}">edit</a>
+    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idCollection': collectionId}) }}">retirer de cette collection</a>
 
-    {{ include('album/_delete_form.html.twig') }}
+    <a href="{{ path('app_collectionn_show', {'id': collectionId}) }}">back to collection</a>
+    {% endif %}
+
+    {# si on vient d'une wishlist #}
+    {% if wishlistId is defined and wishlistId is not null %}
+
+    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idWishlist': wishlistId}) }}">retirer de la wishlist</a>
+
+    <a href="{{ path('app_wishlist_show', {'id': wishlistId}) }}">back to wishlist</a>
+    {% endif %}
+
+
+    {# <a href="{{ path('app_album_edit', {'id': album.id}) }}">edit</a> #}
+
+    {# {{ include('album/_delete_form.html.twig') }} #}
+
+
+
+</div>
+</main>
 {% endblock %}

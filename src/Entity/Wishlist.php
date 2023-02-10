@@ -27,7 +27,6 @@ class Wishlist
 
     public function __construct()
     {
-        // $this->albumWishlists = new ArrayCollection();
         $this->albums = new ArrayCollection();
     }
 
