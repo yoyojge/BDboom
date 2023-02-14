@@ -182,7 +182,7 @@ class BDboomController extends AbstractController
 
 
 
-    
+    //PASSER UN ALBUM DE LA WISHLIST A UNE COLLECTION
     #[Route('/wishlistToCollection', name: 'app_BDboom_wishlistToCollection', methods: ['GET', 'POST'])]
     public function wishlistToCollection( Request $request, BDboomService $BDboomService): Response
     {       

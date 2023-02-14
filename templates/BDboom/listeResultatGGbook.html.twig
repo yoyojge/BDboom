@@ -1,5 +1,5 @@
-<div>Google Book</div>
-<div class="container-fluid bg-trasparent my-4 p-3" style="position: relative;">             
+<div class=" p-3">Google Book</div>
+<div class="container-fluid bg-trasparent  p-3" style="position: relative;">             
     <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3"> 
         {# {{ dump( listItemsGGbook) }} #}
         {% for item in listItemsGGbook %}     
@@ -13,62 +13,78 @@
                 <img src="{{ item.cover }}" class="card-img-top" alt="{{ item.title }}"> 
                 {% endif %}
 
-                <div class="card-body"> 
+                <div class="card-body d-flex flex-column justify-content-between"> 
+
                     
-                    <div class="clearfix mb-3"> 
-                        <span class="float-start badge rounded-pill bg-primary">{{ item.title }}</span> 
-                       
+                    {# bloc haut #}
+                    <div>
+                        <div class="clearfix mb-3"> 
+                            <span class="float-start"><h4 class="fontColorBDblue">{{ item.title }}</h4></span> 
+                        
+                        </div>
                     </div>
+                    {# fin bloc haut #}
                     
-                    {% if item.description is defined %}
-                    <h5 class="card-title">                       
-                        {{ item.description | striptags | slice(0, 70) }}   <br />[...]                     
-                    </h5> 
-                    {% endif %}                   
-                 
-                    <form action="{{ path('app_BDboom_detail' , {'product': 'productGGbook','id': loop.index}) }}" method="POST">
-                        <input type="hidden" id="detailLivre" name="detailLivre" value="{{item|json_encode()}}">
-                        <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
-                        <button type="submit">Voir le détail</button>                        
-                    </form>                    
 
-                    <div class="text-center my-4"> 
-                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
+                    {# bloc bas #}
+                    <div>
+                        {# {% if item.description is defined %}
+                        <h5 class="card-title">                       
+                            {{ item.description | striptags | slice(0, 70) }}   <br />[...]                     
+                        </h5> 
+                        {% endif %}                    #}
+                    
 
-                            
-                            <input type="hidden" id="addTo" name="addTo" value="collection">
-                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
-                            <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
-                            <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
-                            <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
+                        
+                        <form action="{{ path('app_BDboom_detail' , {'product': 'productGGbook','id': loop.index}) }}" method="POST">
+                            <input type="hidden" id="detailLivre" name="detailLivre" value="{{item|json_encode()}}">
                             <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
-                            <div>
-                                <select name="collectionn" id="collectionn">
-                                {% for collectionn in collectionns %}
-                                    <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
-                                {% endfor %}
-                                </select>
-                            </div>
-                            <div><button type="submit">Ajouter à ma collection</button></div>
+                            <button type="submit">Voir le détail</button>                        
+                        </form>                    
 
-                        </form>   
-                    </div> 
+                        {% if app.user %}
+                        <div class="text-center my-4"> 
+                            <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
 
-                    <div class="text-center my-4"> 
-                        <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
+                                
+                                <input type="hidden" id="addTo" name="addTo" value="collection">
+                                <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
+                                <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
+                                <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
+                                <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
+                                <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
+                                <div>
+                                    <select name="collectionn" id="collectionn">
+                                    {% for collectionn in collectionns %}
+                                        <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                                <div><button type="submit">Ajouter à ma collection</button></div>
 
-                            
-                            <input type="hidden" id="addTo" name="addTo" value="wishlist">
-                            <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
-                            <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
-                            <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
-                            <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
-                            <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
-                            
-                            <div><button type="submit">Ajouter à ma wishlist</button></div>
+                            </form>   
+                        </div> 
 
-                        </form>   
-                    </div>                    
+                        <div class="text-center my-4"> 
+                            <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
+
+                                
+                                <input type="hidden" id="addTo" name="addTo" value="wishlist">
+                                <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
+                                <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
+                                <input type="hidden" id="listItemsAmazon" name="listItemsAmazon" value="{{listItemsAmazon|json_encode()}}">
+                                <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
+                                <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
+                                
+                                <div><button type="submit">Ajouter à ma wishlist</button></div>
+
+                            </form>   
+                        </div>                    
+                        {% endif %} 
+                    </div>
+                    {# fin bloc bas #}
+
+                   
 
                 </div> 
                 {# {{ dump( item) }} #}
