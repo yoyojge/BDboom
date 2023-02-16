@@ -37,6 +37,7 @@
 
                         
                         <form action="{{ path('app_BDboom_detail' , {'product': 'productGGbook','id': loop.index}) }}" method="POST">
+                            <input type="hidden" id="from" name="from" value="GGbook">
                             <input type="hidden" id="detailLivre" name="detailLivre" value="{{item|json_encode()}}">
                             <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
                             <button type="submit">Voir le détail</button>                        
@@ -46,7 +47,7 @@
                         <div class="text-center my-4"> 
                             <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
 
-                                
+                                <input type="hidden" id="from" name="from" value="GGbook">
                                 <input type="hidden" id="addTo" name="addTo" value="collection">
                                 <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
                                 <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">
@@ -68,7 +69,7 @@
                         <div class="text-center my-4"> 
                             <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
 
-                                
+                                <input type="hidden" id="from" name="from" value="GGbook">
                                 <input type="hidden" id="addTo" name="addTo" value="wishlist">
                                 <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{item|json_encode()}}">
                                 <input type="hidden" id="listItemsBDboom" name="listItemsBDboom" value="{{listItemsBDboom|json_encode()}}">

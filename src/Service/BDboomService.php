@@ -11,8 +11,11 @@ use App\Repository\WishlistRepository;
 use App\Repository\CollectionnRepository;
 use App\Repository\AlbumCollectionRepository;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class BDboomService {
+use \Mailjet\Resources;
+
+class BDboomService extends AbstractController {
 
      private $albumCollectionRepository;
      private $albumRepository;
@@ -45,7 +48,7 @@ class BDboomService {
      }
 
 
-     public function saveInBDboom($arrayBookInfo, $bdsearch, $addTo) 
+     public function saveInBDboom($arrayBookInfo, $bdsearch, $addFrom) 
      {
           //on enregistre l'image sur le serveur 
           $newPathCover = $this->BDboomRepository->imageLoad($arrayBookInfo['cover']);
@@ -63,7 +66,7 @@ class BDboomService {
           $album->setKeyword( $bdsearch." ".$arrayBookInfo['title'] );
           $album->setAuthor($arrayBookInfo['author']);
           $album->setBDboomDate($Now);
-          $album->setOrigine( $addTo );
+          $album->setOrigine( $addFrom );
 
           //on enregistre cette nouvelle istance en BDD
           $this->albumRepository->save($album, true);   
@@ -115,6 +118,61 @@ class BDboomService {
           $albumObj->removeWishlist($wishlistObj);
           $this->albumRepository->save($albumObj, true); 
      }
+
+
+
+
+     public function mailJetSend01() 
+     {
+             
+          // require 'vendor/autoload.php';
+         
+
+          // Use your saved credentials, specify that you are using Send API v3.1
+           # Please add your access key here cle renseignées dans .env et service.yaml         
+          $MJ_APIKEY_PUBLIC =  $this->getParameter('app.mailJetkey');
+          
+          # Please add your secret key here
+          $MJ_APIKEY_PRIVATE =  $this->getParameter('app.mailJetsecretkey');
+
+
+          $mj = new \Mailjet\Client($MJ_APIKEY_PUBLIC, $MJ_APIKEY_PRIVATE,true,['version' => 'v3.1']);
+
+          // Define your request body
+
+          $body = [
+          'Messages' => [
+               [
+                    'From' => [
+                         'Email' => "gaston@bdboom.fr",
+                         'Name' => "Me"
+                    ],
+                    'To' => [
+                         [
+                              'Email' => "johann.griffe.pro@gmail.com",
+                              'Name' => "You"
+                         ]
+                    ],
+                    'Subject' => "My first Mailjet Email!",
+                    'TextPart' => "Greetings from Mailjet!",
+                    'HTMLPart' => "<h3>Dear passenger 1, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!</h3>
+                    <br />May the delivery force be with you!"
+               ]
+          ]
+          ];
+
+          // All resources are located in the Resources class
+
+          $response = $mj->post(Resources::$Email, ['body' => $body]);
+          // dd($response);
+          // Read the response
+
+          // $response->success() && var_dump($response->getData());
+     }
+
+
+
+
 
 
 }

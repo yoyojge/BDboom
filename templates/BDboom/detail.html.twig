@@ -16,7 +16,7 @@
     {% endfor %}
 
 
-    <div class="container py-4 my-4 mx-auto d-flex flex-column">
+    <div class="container py-4  mx-auto d-flex flex-column">
         
         <div class="header">
             <div class="row r1">
@@ -32,9 +32,9 @@
                 <div class="col-md-7"> 
                     {# <img src="{{ detailBook.cover }}" alt="{{ detailBook.title }}" width="90%" height="95%">  #}
                     {% if detailBook.cover == "no cover" %}
-                    <img src="/images/default01.gif" class="card-img-top" alt="{{ detailBook.title }}"  width="90%" height="95%"> 
+                    <img src="/images/default01.gif" class="" alt="{{ detailBook.title }}"  width="90%" height="95%"> 
                     {% else %}
-                    <img src="{{ detailBook.cover }}" class="card-img-top" alt="{{ detailBook.title }}"  width="90%" height="95%"> 
+                    <img src="{{ detailBook.cover }}" class="" alt="{{ detailBook.title }}"  width="90%" height="95%"> 
                     {% endif %}
                 </div>
                 
@@ -58,6 +58,7 @@
                         <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
 
                             <button type="submit">Ajouter à ma collection</button>
+                            <input type="hidden" id="from" name="from" value="{{addFrom}}">
                             <input type="hidden" id="addTo" name="addTo" value="collection">
                             <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{detailBook|json_encode()}}">
                             <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
@@ -73,6 +74,7 @@
                     <div class="mb-2">
                         <form action="{{ path('app_BDboom_addItemToCollectionOrWishlist') }}" method="POST">
                             <button type="submit">Ajouter à ma wishist</button>
+                            <input type="hidden" id="from" name="from" value="{{addFrom}}">
                             <input type="hidden" id="addTo" name="addTo" value="wishlist">
                             <input type="hidden" id="infoDetailArray" name="infoDetailArray" value="{{detailBook|json_encode()}}">
                             <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">

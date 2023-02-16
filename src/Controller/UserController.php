@@ -41,16 +41,28 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
+        dd('coucou');
+
         if ($form->isSubmitted() && $form->isValid()) {
             
             // on met le role par defaut a user
             $user->setRoles(['ROLE_USER']);
 
+            $token = base_convert(hash('sha256', time() . mt_rand()), 16, 36);
+            $user->setToken( $token);
+
+            $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+            dd($Now);
+            $user->setDate($Now);
+
             //on ashe le mot de passe
             $password = $passwordHasher->hashPassword($user, $request->get('user')['password']);
             $user->setPassword ($password);
             
-            $userRepository->save($user, true);            
+            $userRepository->save($user, true);   
+            
+            //TODO: envoyer un email pour l'activation du token
+
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
@@ -60,6 +72,8 @@ class UserController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response

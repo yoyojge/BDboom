@@ -33,7 +33,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 
-
 #[Route('/')]
 class BDboomController extends AbstractController
 {
@@ -79,7 +78,7 @@ class BDboomController extends AbstractController
     public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
     {        
 
-        if(!empty( $this->session->get('listItemsBDboom', [])  )){
+        if(!empty( $this->session->get('listItemsAmazon', [])  )){
             
             //si on vient de ajouter a la collection depuis la page liste
             $listItemsBDboom = $this->session->get('listItemsBDboom', []);
@@ -150,7 +149,7 @@ class BDboomController extends AbstractController
         // $routeParams = $request->attributes->get('_route_params');
         // $urlProduct = $routeParams['product'];
         // $urlProductId = $routeParams['id'];
-
+        $addFrom = $request->request->get('from');
         $bdsearch = $request->request->get('bdsearch');
             
         //recuperation des infos par session ou par json si on vient de addCollection OU addWishlist
@@ -176,6 +175,7 @@ class BDboomController extends AbstractController
             'detailBook' => $detailBook,
             'collectionns' => $collectionns,
             'bdsearch' => $bdsearch,
+            'addFrom' => $addFrom,
         ]);
     }
 
@@ -274,7 +274,7 @@ class BDboomController extends AbstractController
     #[Route('/addItemToCollectionOrWishlist', name: 'app_BDboom_addItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
     public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, MessageGenerator $messageGenerator, BDboomService $BDboomService): Response
     {       
-        
+        $addFrom = $request->request->get('from');
         $addTo = $request->request->get('addTo');
         $bdsearch = $request->request->get('bdsearch');
 
@@ -295,7 +295,7 @@ class BDboomController extends AbstractController
             //si le livre n'est pas en BDD, on enregistre le livre dans la table livre
             //on enregistre l'image sur le serveur ::  que si pas deja existant                      
             //on recupere l'id du nouveau livre qui vient d'être enregistré
-            $albumID =  $BDboomService->saveInBDboom($arrayBookInfo, $bdsearch, $addTo);  
+            $albumID =  $BDboomService->saveInBDboom($arrayBookInfo, $bdsearch, $addFrom);  
         }
         else{
             //si le livre deja en BDD
@@ -436,7 +436,7 @@ class BDboomController extends AbstractController
 
     //inscription
     #[Route('/inscription', name: 'app_BDboom_inscription', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository,  UserPasswordHasherInterface $passwordHasher, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
+    public function new(Request $request, UserRepository $userRepository,  UserPasswordHasherInterface $passwordHasher, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, BDboomService $BDboomService): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -444,8 +444,21 @@ class BDboomController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
+
             // on met le role par defaut a user
             $user->setRoles(['ROLE_USER']);
+
+            //on renseigne le token
+            $token = base_convert(hash('sha256', time() . mt_rand()), 16, 36);
+            $user->setToken( $token);
+
+            //on renseigne la date
+            $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+            // $Now = new \DateTime('now');
+            // $Now = new \DateTime('2030-01-01 00:00:00');
+            // $Now = date("Y-m-d H:i:s");
+            // dd(gettype($Now), $Now);        
+            $user->setUserDate($Now);
 
             //on ashe le mot de passe
             $password = $passwordHasher->hashPassword($user, $request->get('user')['password']);
@@ -468,8 +481,9 @@ class BDboomController extends AbstractController
             $wishlistRepository->save($wishlist, true);
 
 
-
             //TODO: ajouter la gestion de la creation de compte par mail de conf + token
+            $BDboomService->mailJetSend01();
+            
 
             //ajout d'un message flash
             $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé');
