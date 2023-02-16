@@ -144,7 +144,7 @@ class BDboomService extends AbstractController {
           'Messages' => [
                [
                     'From' => [
-                         'Email' => "gaston@bdboom.fr",
+                         'Email' => "info@bdboom.fr",
                          'Name' => "Me"
                     ],
                     'To' => [
@@ -164,7 +164,7 @@ class BDboomService extends AbstractController {
           // All resources are located in the Resources class
 
           $response = $mj->post(Resources::$Email, ['body' => $body]);
-          // dd($response);
+          dd($response);
           // Read the response
 
           // $response->success() && var_dump($response->getData());
