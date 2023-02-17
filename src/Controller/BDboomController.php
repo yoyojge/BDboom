@@ -434,6 +434,35 @@ class BDboomController extends AbstractController
 
 
 
+    //confirmation inscription
+    #[Route('/confirmationInscription', name: 'app_BDboom_confirmationInscription', methods: ['GET', 'POST'])]
+    public function confirmationInscription(Request $request, UserRepository $userRepository, BDboomService $BDboomService): Response
+    {
+        //TODO: recuperer le token
+        $token = $request->query->get('token');
+        
+
+        //TODO: recuperer le user concerné
+        $userNew = $userRepository->findOneBy( ['token' =>  $token ]); 
+        
+
+        //TODO: vider le token en Bdd et mettre active a true        
+        $userNew->setToken(null);
+        $userNew->setActive(true);
+        $userRepository->save($userNew, true);
+        // dd($userNew);
+
+        //ajout d'un message flash
+        $this->addFlash('compteAjout', 'Bravo, votre compte est maintenant complètement validé !');
+
+        return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+
+    }
+
+
+
+
+
     //inscription
     #[Route('/inscription', name: 'app_BDboom_inscription', methods: ['GET', 'POST'])]
     public function new(Request $request, UserRepository $userRepository,  UserPasswordHasherInterface $passwordHasher, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, BDboomService $BDboomService): Response
@@ -452,17 +481,18 @@ class BDboomController extends AbstractController
             $token = base_convert(hash('sha256', time() . mt_rand()), 16, 36);
             $user->setToken( $token);
 
+            //on renseigne active
+            $user->setActive(false);
+
             //on renseigne la date
             $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
-            // $Now = new \DateTime('now');
-            // $Now = new \DateTime('2030-01-01 00:00:00');
-            // $Now = date("Y-m-d H:i:s");
-            // dd(gettype($Now), $Now);        
             $user->setUserDate($Now);
 
             //on ashe le mot de passe
             $password = $passwordHasher->hashPassword($user, $request->get('user')['password']);
-            $user->setPassword ($password);            
+            $user->setPassword ($password);   
+            
+            //on enregistre le nouveau user
             $userRepository->save($user, true);     
             
             //creer et associer une collection
@@ -474,19 +504,19 @@ class BDboomController extends AbstractController
             $collectionn->setCollectionName("Ma collection");
             $collectionnRepository->save($collectionn, true);
 
-            //TODO: creer et associer une wishlist
+            //on cree et associe une wishlist
             $wishlist = new Wishlist();
             $wishlist->setCollector($userObj[0]);
             $wishlist->setWishlistName("Ma wishlist");
             $wishlistRepository->save($wishlist, true);
 
 
-            //TODO: ajouter la gestion de la creation de compte par mail de conf + token
-            $BDboomService->mailJetSend01();
+            //on ajoute la gestion de la creation de compte par mail de conf + token
+            $BDboomService->mailJetSend01($token, $userObj[0]);
             
 
             //ajout d'un message flash
-            $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé');
+            $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé.<br />Confirmez votre compte en cliquant sur le lien transmis par email.');
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }

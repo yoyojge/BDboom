@@ -59,6 +59,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $userDate = null;
 
+    #[ORM\Column]
+    private ?bool $active = null;
+
 
 
     
@@ -280,6 +283,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserDate(?\DateTimeInterface $userDate): self
     {
         $this->userDate = $userDate;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

@@ -2,18 +2,21 @@
 
 namespace App\Service;
 
-use App\Entity\Album;
+use App\Entity\User;
 
-use App\Repository\AlbumRepository;
+use App\Entity\Album;
 // use Psr\Container\ContainerInterface;
+use \Mailjet\Resources;
+use App\Repository\AlbumRepository;
 use App\Repository\BDboomRepository;
 use App\Repository\WishlistRepository;
-use App\Repository\CollectionnRepository;
-use App\Repository\AlbumCollectionRepository;
 
+use App\Repository\CollectionnRepository;
+
+use App\Repository\AlbumCollectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use \Mailjet\Resources;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BDboomService extends AbstractController {
 
@@ -27,6 +30,7 @@ class BDboomService extends AbstractController {
           $this->BDboomRepository = $BDboomRepository;
           $this->collectionnRepository = $collectionnRepository;
           $this->wishlistRepository = $wishlistRepository;
+         
           
      }
  
@@ -122,11 +126,11 @@ class BDboomService extends AbstractController {
 
 
 
-     public function mailJetSend01() 
+     public function mailJetSend01($token, $user) 
      {
              
           // require 'vendor/autoload.php';
-         
+          // dd($token, $user,$user->getEmail() );
 
           // Use your saved credentials, specify that you are using Send API v3.1
            # Please add your access key here cle renseignées dans .env et service.yaml         
@@ -137,7 +141,7 @@ class BDboomService extends AbstractController {
 
 
           $mj = new \Mailjet\Client($MJ_APIKEY_PUBLIC, $MJ_APIKEY_PRIVATE,true,['version' => 'v3.1']);
-
+          // dd($mj);
           // Define your request body
 
           $body = [
@@ -145,29 +149,34 @@ class BDboomService extends AbstractController {
                [
                     'From' => [
                          'Email' => "info@bdboom.fr",
-                         'Name' => "Me"
+                         'Name' => "BDboom"
                     ],
                     'To' => [
                          [
-                              'Email' => "johann.griffe.pro@gmail.com",
-                              'Name' => "You"
+                              'Email' => $user->getEmail(),
+                              'Name' => $user->getFirstName()." ".$user->getLastName()
                          ]
                     ],
-                    'Subject' => "My first Mailjet Email!",
-                    'TextPart' => "Greetings from Mailjet!",
-                    'HTMLPart' => "<h3>Dear passenger 1, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!</h3>
-                    <br />May the delivery force be with you!"
+                    'Subject' => "Bienvenu sur BDboom",
+                    'TextPart' => "Bienvenu sur BDboom",
+                    'HTMLPart' => "<h3>Bonjour, Bienvenu sur BDboom,</h3><br />
+                    Pour complètement valider votre compte merci de cliquer sur le lien suivant:<br />
+                    <a href=\"http://bdboom.test/confirmationInscription?token=".$token."\">Confirmez votre compte</a>!
+                    <br />
+                    "
                ]
           ]
           ];
 
+
+          // <a href=\"' . $this->generateUrl('app_BDboom_confirmationInscription', ['token' => $user->getToken()], UrlGeneratorInterface::ABSOLUTE_URL) . '\">Activer mon compte</a>
           // All resources are located in the Resources class
 
           $response = $mj->post(Resources::$Email, ['body' => $body]);
-          dd($response);
+          // dd($response);
           // Read the response
 
-          // $response->success() && var_dump($response->getData());
+          $response->success() && var_dump($response->getData());
      }
 
 
