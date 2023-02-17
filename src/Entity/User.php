@@ -11,6 +11,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -21,6 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -63,8 +68,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $active = null;
 
 
+    //pour faire respecter la contrainte d'unicité de l'email dans la table
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => 'email',
+            'errorPath' => 'email',
+            'message' => 'Cet email est deja utilisé !!!',
+        ]));
 
-    
+        $metadata->addPropertyConstraint('email', new Assert\Email());
+    }
 
     public function __construct()
     {

@@ -438,15 +438,15 @@ class BDboomController extends AbstractController
     #[Route('/confirmationInscription', name: 'app_BDboom_confirmationInscription', methods: ['GET', 'POST'])]
     public function confirmationInscription(Request $request, UserRepository $userRepository, BDboomService $BDboomService): Response
     {
-        //TODO: recuperer le token
+        //recuperer le token
         $token = $request->query->get('token');
         
 
-        //TODO: recuperer le user concerné
+        //recuperer le user concerné
         $userNew = $userRepository->findOneBy( ['token' =>  $token ]); 
         
 
-        //TODO: vider le token en Bdd et mettre active a true        
+        //vider le token en Bdd et mettre active a true        
         $userNew->setToken(null);
         $userNew->setActive(true);
         $userRepository->save($userNew, true);
