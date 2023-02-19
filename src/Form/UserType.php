@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserType extends AbstractType
 {
@@ -33,11 +34,28 @@ class UserType extends AbstractType
                     'placeholder' => 'Votre adresse e-mail'
                 ]
             ])
-            ->add('password', PasswordType::class, [
-                'label' => 'Votre mot de passe',
-                'attr' => [
-                    'placeholder' => 'Votre mot de passe'
-                ]
+            // ->add('password', PasswordType::class, [
+            //     'label' => 'Votre mot de passe',
+            //     'attr' => [
+            //         'placeholder' => 'Votre mot de passe'
+            //     ]
+            // ])
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'The password fields must match.',
+                'options' => ['attr' => ['class' => 'password-field']],
+                'required' => true,
+                'first_options'  => [ 
+                    'attr' => [
+                        'placeholder' => 'Votre mot de passe'
+                    ]
+                ],
+                'second_options'  => [ 
+                    'attr' => [
+                        'placeholder' => 'Confirmez votre mot de passe'
+                    ]
+                ],
+                // 'second_options' => ['label' => 'Confirmer le mot de passe'],
             ])
             ->add('lastName', null, [
                 'label' => 'Votre nom',

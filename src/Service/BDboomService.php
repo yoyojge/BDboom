@@ -163,7 +163,11 @@ class BDboomService extends AbstractController {
                     Pour complètement valider votre compte merci de cliquer sur le lien suivant:<br />
                     <a href=\"http://bdboom.test/confirmationInscription?token=".$token."\">Confirmez votre compte</a>!
                     <br />
-                    "
+                    ",
+                    //TODO:preparer le template de mail dans mailJet
+                    // 'TemplateID' => 1,
+                    // 'TemplateLanguage' => true,
+                    
                ]
           ]
           ];
@@ -177,6 +181,46 @@ class BDboomService extends AbstractController {
           // Read the response
 
           $response->success() && var_dump($response->getData());
+     }
+
+
+
+
+
+
+
+     public function mailJetSendTest() 
+     {           
+          $MJ_APIKEY_PUBLIC =  $this->getParameter('app.mailJetkey');
+          $MJ_APIKEY_PRIVATE =  $this->getParameter('app.mailJetsecretkey');
+
+          $mj = new \Mailjet\Client($MJ_APIKEY_PUBLIC, $MJ_APIKEY_PRIVATE,true,['version' => 'v3.1']);
+
+          $body = [
+          'Messages' => [
+               [
+                    'From' => [
+                         'Email' => "info@bdboom.fr",
+                         'Name' => "BDboom"
+                    ],
+                    'To' => [
+                         [
+                         'Email' => "johann.griffe.pro@gmail.com",
+                         'Name' => "yoyo"
+                         ]
+                    ],
+                    'Subject' => "Bienvenu sur BDboom",
+                    'TextPart' => "Bienvenu sur BDboom",
+                    'HTMLPart' => "<h3>Bonjour, Bienvenu sur BDboom,</h3><br />
+                    <br />
+                    ",  
+               ]
+          ]
+          ];
+
+          $response = $mj->post(Resources::$Email, ['body' => $body]);
+          // $response->success() && var_dump($response->getData());
+          // dd($response);
      }
 
 

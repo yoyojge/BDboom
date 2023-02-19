@@ -461,7 +461,18 @@ class BDboomController extends AbstractController
 
 
 
+    //test sent email ajax call service
+    #[Route('/sendMessageTest', name: 'app_BDboom_sendMessageTest', methods: ['GET', 'POST'])]
+    public function sendMessageTest( BDboomService $BDboomService): Response
+    {
 
+        $BDboomService->mailJetSendTest();
+        return new Response(
+            'response ok', 
+             Response::HTTP_OK
+        );
+
+    }
 
     //inscription
     #[Route('/inscription', name: 'app_BDboom_inscription', methods: ['GET', 'POST'])]
@@ -488,8 +499,10 @@ class BDboomController extends AbstractController
             $Now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
             $user->setUserDate($Now);
 
-            //on ashe le mot de passe
-            $password = $passwordHasher->hashPassword($user, $request->get('user')['password']);
+
+            // dd($request->get('user')['password']['first']);
+            //on ashe le mot de passe : password renvoit un tableau (mot de passe et confirmation)
+            $password = $passwordHasher->hashPassword($user, $request->get('user')['password']['first']);
             $user->setPassword ($password);   
             
             //on enregistre le nouveau user

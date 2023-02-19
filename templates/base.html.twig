@@ -99,5 +99,28 @@ tarteaucitron.init({
          <!-- footer Start -->
         {{ include('/BDboom/footer.html.twig') }}  
         <!-- footer End -->
+
+
+        {% block js %}
+        <script>
+        function sendMessageTest(){ 
+
+            
+            fetch( "{{ path('app_BDboom_sendMessageTest') }}")
+            .then(function (response) {
+                if (response.status == 200) {
+                    console.log('cool sendtest');
+                } else {
+                    console.log(response.status);
+                }
+            })
+            //.catch(error => alert("Erreur : " + error));
+            
+        } 
+        </script>
+        {% endblock %}
+
+
+
     </body>
 </html>
