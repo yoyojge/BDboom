@@ -20,6 +20,8 @@
 
 let bdbnavHeight;
 let maxcarouselItemHeight = 512;
+let coefficient = 0.7;
+// let maxcarouselItemHeight = 600;
 
 function initTop(){
   console.log('initTop');
@@ -31,11 +33,12 @@ function initTop(){
   const carouselItem = document.querySelectorAll('.carousel-item');
 
   carouselItem.forEach(function(item) {
-    if( window.innerWidth*0.52 < 512){
-      item.style.height = (window.innerWidth*0.52)+'px';
+    if( window.innerWidth * coefficient < maxcarouselItemHeight){
+      item.style.height = (window.innerWidth * coefficient)+'px';
+      // item.style.height = '250px';
     }
     else{
-      item.style.height = '512px';
+      item.style.height = maxcarouselItemHeight+'px';
     }
   });
 
@@ -47,7 +50,7 @@ addEventListener('resize', (event) => {
 
 
 window.addEventListener('load', (event) => {
-  console.log('DOM fully loaded and parsed');
+  console.log('DOM fully loaded and parsed hhhh');
   initTop();
 });
 

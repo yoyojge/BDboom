@@ -145,34 +145,36 @@ class BDboomService extends AbstractController {
           // Define your request body
 
           $body = [
-          'Messages' => [
-               [
-                    'From' => [
-                         'Email' => "info@bdboom.fr",
-                         'Name' => "BDboom"
-                    ],
-                    'To' => [
-                         [
-                              'Email' => $user->getEmail(),
-                              'Name' => $user->getFirstName()." ".$user->getLastName()
-                         ]
-                    ],
-                    'Subject' => "Bienvenu sur BDboom",
-                    'TextPart' => "Bienvenu sur BDboom",
-                    'HTMLPart' => "<h3>Bonjour, Bienvenu sur BDboom,</h3><br />
-                    Pour complètement valider votre compte merci de cliquer sur le lien suivant:<br />
-                    <a href=\"http://bdboom.test/confirmationInscription?token=".$token."\">Confirmez votre compte</a>!
-                    <br />
-                    ",
-                    //TODO:preparer le template de mail dans mailJet
-                    // 'TemplateID' => 1,
-                    // 'TemplateLanguage' => true,
-                    
+               'Messages' => [
+                    [
+                         'From' => [
+                              'Email' => "info@bdboom.fr",
+                              'Name' => "BDboom"
+                         ],
+                         'To' => [
+                              [
+                                   'Email' => $user->getEmail(),
+                                   'Name' => $user->getFirstName()." ".$user->getLastName()
+                              ]
+                         ],
+                         'TemplateID'=> 4595050,
+                         'TemplateLanguage' => true,
+                         'Subject' => 'Bienvenu sur BDboom', 
+                         'Variables' => json_decode('{
+                                   "urlConf": "http://bdboom.test/confirmationInscription"
+                              }', true)
+                    ]
+                         
                ]
-          ]
+          
           ];
 
-
+          // 'TextPart' => "Bienvenu sur BDboom",
+          // 'HTMLPart' => "<h3>Bonjour, Bienvenu sur BDboom,</h3><br />
+          // Pour complètement valider votre compte merci de cliquer sur le lien suivant:<br />
+          // <a href=\"http://bdboom.test/confirmationInscription?token=".$token."\">Confirmez votre compte</a>!
+          // <br />
+          // ",
           // <a href=\"' . $this->generateUrl('app_BDboom_confirmationInscription', ['token' => $user->getToken()], UrlGeneratorInterface::ABSOLUTE_URL) . '\">Activer mon compte</a>
           // All resources are located in the Resources class
 
