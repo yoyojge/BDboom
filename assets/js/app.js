@@ -1,22 +1,4 @@
 
-// let bdbnav = document.getElementById('bdbnav');
-
-// bdbnav.addEventListener('click',(e)=>{
-//   console.log(`bouton moins`);
-//   if(solution - robotTry > 0){
-//        arnaque();
-//   }
-//   else if(solution - robotTry === 0){
-//        console.log('Le ROBOT a gagné !!! ')
-//   }
-//   else{
-//        max =    robotTry;
-//        numberTry--;
-//        console.log(` decremente B`);
-//   }          
-//   letStart();
-// });
-
 
 let bdbnavHeight;
 let maxcarouselItemHeight = 512;

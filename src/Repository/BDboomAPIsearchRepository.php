@@ -324,29 +324,35 @@ class BDboomAPIsearchRepository  extends AbstractController
     { 
 
     //    dd($listItemsAmazonBrut);
-        for($i=0; $i<count($listItemsAmazonBrut); $i++){
-            $detailBook[$i]['title'] = $listItemsAmazonBrut[$i]['itemInfo']['title']['displayValue'];
-            $detailBook[$i]['cover'] = $listItemsAmazonBrut[$i]['images']['primary']['large']['uRL'];
-            $detailBook[$i]['description'] = "";
-            //boucle sur le tableau pour recuperer toutes les infos
-            $detailBook[$i]['author'] = "";
-            for($j = 0; $j < count($listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors']); $j++){
-                $detailBook[$i]['author'] .= $listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors'][$j]['name'].", ";
-            }  
-            if(!empty($listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs'])){
-                $detailBook[$i]['isbn'] = $listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs']['displayValues'][0];   
-            }         
-            else{
-                $detailBook[$i]['isbn'] = "no isbn";
-            }                   
-            $detailBook[$i]['detailPageUrl'] = $listItemsAmazonBrut[$i]['detailPageURL'];
-            $detailBook[$i]['price'] = $listItemsAmazonBrut[$i]['offers']['listings'][0]['price']['displayAmount']; 
-            $detailBook[$i]['refBDfugue'] = "";
-            $detailBook[$i]['refAmazone'] = $listItemsAmazonBrut[$i]['aSIN'];
+       if(!empty($listItemsAmazonBrut)){
+            for($i=0; $i<count($listItemsAmazonBrut); $i++){
+                $detailBook[$i]['title'] = $listItemsAmazonBrut[$i]['itemInfo']['title']['displayValue'];
+                $detailBook[$i]['cover'] = $listItemsAmazonBrut[$i]['images']['primary']['large']['uRL'];
+                $detailBook[$i]['description'] = "";
+                //boucle sur le tableau pour recuperer toutes les infos
+                $detailBook[$i]['author'] = "";
+                for($j = 0; $j < count($listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors']); $j++){
+                    $detailBook[$i]['author'] .= $listItemsAmazonBrut[$i]['itemInfo']['byLineInfo']['contributors'][$j]['name'].", ";
+                }  
+                if(!empty($listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs'])){
+                    $detailBook[$i]['isbn'] = $listItemsAmazonBrut[$i]['itemInfo']['externalIds']['iSBNs']['displayValues'][0];   
+                }         
+                else{
+                    $detailBook[$i]['isbn'] = "no isbn";
+                }                   
+                $detailBook[$i]['detailPageUrl'] = $listItemsAmazonBrut[$i]['detailPageURL'];
+                $detailBook[$i]['price'] = $listItemsAmazonBrut[$i]['offers']['listings'][0]['price']['displayAmount']; 
+                $detailBook[$i]['refBDfugue'] = "";
+                $detailBook[$i]['refAmazone'] = $listItemsAmazonBrut[$i]['aSIN'];
 
-        }
-        // dd($detailBook);
-        return $detailBook;
+            }
+            // dd($detailBook);
+            return $detailBook;
+        } 
+        else{
+            $detailBook=[];
+            return $detailBook;
+        }  
     }
 
 

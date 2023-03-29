@@ -133,7 +133,7 @@ class BDboomService extends AbstractController {
           // dd($token, $user,$user->getEmail() );
 
           // Use your saved credentials, specify that you are using Send API v3.1
-           # Please add your access key here cle renseignées dans .env et service.yaml         
+           # Please add your access key here cle renseignées dans .env et config/service.yaml         
           $MJ_APIKEY_PUBLIC =  $this->getParameter('app.mailJetkey');
           
           # Please add your secret key here
