@@ -166,7 +166,7 @@ class BDboomService extends AbstractController {
                          //           "urlConf": "http://bdboom.test/confirmationInscription?token="'.$user->getToken().'
                          //      }', true)
                          'Variables' => [
-                              'urlConf' => $_SERVER["HTTP_HOST"].'://'.$_SERVER["HTTP_HOST"].'/confirmationInscription?token='.$user->getToken().''
+                              'urlConf' => $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].'/confirmationInscription?token='.$user->getToken().''
                          ]
                     ]
                          
