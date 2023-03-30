@@ -144,6 +144,8 @@ class BDboomService extends AbstractController {
           // dd($mj);
           // Define your request body
 
+         
+
           $body = [
                'Messages' => [
                     [
@@ -164,7 +166,7 @@ class BDboomService extends AbstractController {
                          //           "urlConf": "http://bdboom.test/confirmationInscription?token="'.$user->getToken().'
                          //      }', true)
                          'Variables' => [
-                              'urlConf' => 'http://bdboom.test/confirmationInscription?token='.$user->getToken().''
+                              'urlConf' => $_SERVER["HTTP_HOST"].'://'.$_SERVER["HTTP_HOST"].'/confirmationInscription?token='.$user->getToken().''
                          ]
                     ]
                          

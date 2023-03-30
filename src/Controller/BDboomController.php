@@ -529,10 +529,14 @@ class BDboomController extends AbstractController
             
 
             //ajout d'un message flash
-            $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé.<br />Confirmez votre compte en cliquant sur le lien transmis par email.');
+            $this->addFlash('compteAjout', 'Bravo, votre compte a été correctement créé.\n Confirmez votre compte en cliquant sur le lien transmis par email.');
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
+
+        // dd($_SERVER["HTTP_HOST"], $_SERVER["REQUEST_SCHEME"]);
+        // $url = parse_url($_SERVER['PHP_SELF']);
+        // dd( $url);
 
         return $this->renderForm('BDboom/inscription.html.twig', [
             'user' => $user,
