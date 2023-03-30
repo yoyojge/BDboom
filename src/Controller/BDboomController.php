@@ -515,13 +515,13 @@ class BDboomController extends AbstractController
             $userObj = $userRepository->findBy( array('id' => $idNewUser ));
             $collectionn->setCollector($userObj[0]);
             $collectionn->setCollectionName("Ma collection");
-            $collectionnRepository->save($collectionn, true);
+            // $collectionnRepository->save($collectionn, true);
 
             //on cree et associe une wishlist
             $wishlist = new Wishlist();
             $wishlist->setCollector($userObj[0]);
             $wishlist->setWishlistName("Ma wishlist");
-            $wishlistRepository->save($wishlist, true);
+            // $wishlistRepository->save($wishlist, true);
 
 
             //on ajoute la gestion de la creation de compte par mail de conf + token

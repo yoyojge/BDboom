@@ -159,10 +159,13 @@ class BDboomService extends AbstractController {
                          ],
                          'TemplateID'=> 4595050,
                          'TemplateLanguage' => true,
-                         'Subject' => 'Bienvenu sur BDboom', 
-                         'Variables' => json_decode('{
-                                   "urlConf": "http://bdboom.test/confirmationInscription"
-                              }', true)
+                         'Subject' => 'Bienvenu sur BDboom',
+                         // 'Variables' => json_decode('{
+                         //           "urlConf": "http://bdboom.test/confirmationInscription?token="'.$user->getToken().'
+                         //      }', true)
+                         'Variables' => [
+                              'urlConf' => 'http://bdboom.test/confirmationInscription?token='.$user->getToken().''
+                         ]
                     ]
                          
                ]
