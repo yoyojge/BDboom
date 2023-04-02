@@ -1,4 +1,6 @@
 
+console.log('test vendredi');
+
 
 let bdbnavHeight;
 let maxcarouselItemHeight = 512;
@@ -32,7 +34,7 @@ addEventListener('resize', (event) => {
 
 
 window.addEventListener('load', (event) => {
-  console.log('DOM fully loaded and parsed hhhh');
+  console.log('DOM fully loaded and parsed hhhhnnn');
   initTop();
 });
 
