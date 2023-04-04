@@ -78,7 +78,7 @@ class BDboomController extends AbstractController
     public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
     {        
 
-        if(!empty( $this->session->get('listItemsAmazon', [])  )){
+        if(!empty( $this->session->get('listItemsAmazon', []) ) || !empty( $this->session->get('listItemsGGbook', []) )                        ){
             
             //si on vient de ajouter a la collection depuis la page liste
             $listItemsBDboom = $this->session->get('listItemsBDboom', []);
@@ -274,6 +274,9 @@ class BDboomController extends AbstractController
     #[Route('/addItemToCollectionOrWishlist', name: 'app_BDboom_addItemToCollectionOrWishlist', methods: ['GET', 'POST'])]
     public function addItemToCollection(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, AlbumCollectionRepository $albumCollectionRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository, MessageGenerator $messageGenerator, BDboomService $BDboomService): Response
     {       
+        
+       
+        
         $addFrom = $request->request->get('from');
         $addTo = $request->request->get('addTo');
         $bdsearch = $request->request->get('bdsearch');
@@ -333,7 +336,7 @@ class BDboomController extends AbstractController
         }
 
 
-        //retour sur la page precedente (pahe liste ou page detail)
+        //retour sur la page precedente (page liste ou page detail)
         $previousUrl = $_SERVER['HTTP_REFERER'];
 
         $pos1 = strpos($previousUrl, 'detail');
@@ -360,18 +363,24 @@ class BDboomController extends AbstractController
         //page liste
         if($pos2 != false){            
 
+            
+
             $listItemsBDboom = json_decode($request->request->get('listItemsBDboom'), true);
             $listItemsAmazon = json_decode($request->request->get('listItemsAmazon'), true);
             $listItemsGGbook = json_decode($request->request->get('listItemsGGbook'), true);
+
+           
 
             //session pour retour information sur page liste
             $this->session->set('listItemsBDboom', $listItemsBDboom);
             $this->session->set('listItemsAmazon', $listItemsAmazon);
             $this->session->set('listItemsGGbook', $listItemsGGbook);
-        
-            //on retourne sur la meme page liste        
-                
+            
+           
+
+            //on retourne sur la meme page liste                  
             return $this->redirectToRoute('app_BDboom_listeResultat',[], Response::HTTP_SEE_OTHER);
+            // dd("coucou");
         }
       
     }
