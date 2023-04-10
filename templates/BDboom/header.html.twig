@@ -27,7 +27,7 @@
 
                   {% if app.user %}
                       <div>
-                          You are logged in as {{ app.user.userIdentifier }}<br />
+                          {{ app.user.userIdentifier }}<br />
                           <a href="{{ path('app_logout') }}" class="white">Logout</a>
                       </div>
                   {% else %}
