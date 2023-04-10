@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suppression Collection{% endblock %}
+
+{% block body %}
+
+
+
+<main>
+
+    
+    <div  id="myCarouselInner" >
+        <div class="bdboomPaddingMain">
+            <h1>Supprimer la Collection : {{collectionn.CollectionName}}</h1>
+
+            {# {{ include('collectionn/_form.html.twig', {'button_label': 'je supprime'}) }} #}
+
+            {# <a href="{{ path('app_collectionn_index') }}">back to list</a> #}
+
+            {{ include('collectionn/_delete_form.html.twig') }}
+
+        </div>
+    </div>
+</main>        
+{% endblock %}

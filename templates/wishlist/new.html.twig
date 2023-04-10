@@ -3,9 +3,13 @@
 {% block title %}New Wishlist{% endblock %}
 
 {% block body %}
-    <h1>Create new Wishlist</h1>
-
-    {{ include('wishlist/_form.html.twig') }}
-
-    <a href="{{ path('app_wishlist_index') }}">back to list</a>
+<main>
+    <div id="myCarouselInner" >
+        <div class="bdboomPaddingMain">
+            <h1>Ajouter une nouvelle Wishlist</h1>
+            {{ include('wishlist/_form.html.twig', {'button_label': 'nouvelle collection'}) }}
+            {# <a href="{{ path('app_wishlist_index') }}">back to list</a> #}
+        </div>
+    </div>
+</main>
 {% endblock %}

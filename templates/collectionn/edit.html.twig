@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Collectionn{% endblock %}
+{% block title %}Renomer la collection{% endblock %}
 
 {% block body %}
 
@@ -10,13 +10,15 @@
 
     
     <div  id="myCarouselInner" >
-        <h1>Edit Collectionn</h1>
+        <div class="bdboomPaddingMain">
+            <h1>Renommer la collection : {{collectionn.CollectionName}}</h1>
 
-        {{ include('collectionn/_form.html.twig', {'button_label': 'Update'}) }}
+            {{ include('collectionn/_form.html.twig', {'button_label': 'Renommer'}) }}
 
-        {# <a href="{{ path('app_collectionn_index') }}">back to list</a> #}
+            {# <a href="{{ path('app_collectionn_index') }}">back to list</a> #}
 
-        {{ include('collectionn/_delete_form.html.twig') }}
+            {# {{ include('collectionn/_delete_form.html.twig') }} #}
+        </div>
 
 
     </div>

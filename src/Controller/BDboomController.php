@@ -75,7 +75,7 @@ class BDboomController extends AbstractController
     // PAGE LISTE :: de resultat apres formulaire de recherche du header 
     // ou ajout depuis la page liste ou detail
     #[Route('/listeResultat', name: 'app_BDboom_listeResultat', methods: ['GET','POST'])]
-    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository): Response
+    public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
     {        
 
         if(!empty( $this->session->get('listItemsAmazon', []) ) || !empty( $this->session->get('listItemsGGbook', []) )                        ){
@@ -121,9 +121,12 @@ class BDboomController extends AbstractController
             // dd($listItemsGGbook);     
         }  
 
-        //on recupere les collections du user connecté
+
         $user = $this->getUser();
+        //on recupere les collections du user connecté        
         $collectionns = $collectionnRepository->findBy( array('collector' => $user ) );
+        //on recupere les wishlists du user connecté
+        $wishlists = $wishlistRepository->findBy( array('collector' => $user ) );
 
         return $this->render('BDboom/listeResultat.html.twig', [
             'listItemsAmazon' => $listItemsAmazon,
@@ -131,6 +134,7 @@ class BDboomController extends AbstractController
             'listItemsBDboom' => $listItemsBDboom,
             'bdsearch' => $bdsearch,
             'collectionns' => $collectionns,
+            'wishlists' => $wishlists,
         ]);
     }
 
@@ -309,7 +313,7 @@ class BDboomController extends AbstractController
               
         //on enregistre le livre dans la collection du user
         if($addTo == "collection"){
-            //on recupere l'id de la collection , puis on en deduire l'instance de l'objet collection     
+            //on recupere l'id de la collection , puis on en deduit l'instance de l'objet collection     
             $collectionnIdSelected = $request->request->get('collectionn');   
            
             //appel du service
@@ -322,14 +326,21 @@ class BDboomController extends AbstractController
 
         //on enregistre le livre dans la wishlist du user
         if($addTo == "wishlist"){
+           
             // on recupere l'instance de l'objet wishlist
-            $user = $this->getUser();        
-            $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);                 
+            // $user = $this->getUser();        
+            // $wishlistObj = $wishlistRepository->findOneBy( ['collector' =>  $user ]);                 
     
-            $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
+            // $albumObj = $albumRepository->findOneBy( array('id' => $albumID ));
                
-            $albumObj->addWishlist($wishlistObj);
-            $albumRepository->save($albumObj, true);
+            // $albumObj->addWishlist($wishlistObj);
+            // $albumRepository->save($albumObj, true);
+
+            //on recupere l'id de la collection , puis on en deduit l'instance de l'objet collection     
+            $wishlistIdSelected = $request->request->get('wishlist');   
+           
+            //appel du service
+            $BDboomService->addAnIdBookToAnIdWishlist($wishlistIdSelected,$albumID );
     
             //ajout d'un message flash
             $this->addFlash('albumAjout', 'Bravo, l album a été ajoutée à votre wishlist');

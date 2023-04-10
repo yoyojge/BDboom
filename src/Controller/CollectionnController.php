@@ -41,10 +41,10 @@ class CollectionnController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-
+            // dd("here ");
             //on definit le user associé et connecté a la collection
             $user = $this->getUser();
-            $collectionn ->setCollector($user);
+            $collectionn->setCollector($user);
 
             $collectionnRepository->save($collectionn, true);
 
@@ -96,13 +96,45 @@ class CollectionnController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $collectionnRepository->save($collectionn, true);
 
-            return $this->redirectToRoute('app_collectionn_show', [
-                'id' => $collectionn->getId(),
-            ], 
-            Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('app_collectionn_show', [
+            //     'id' => $collectionn->getId(),
+            // ], 
+            // Response::HTTP_SEE_OTHER);
+            $this->addFlash('collectionAjout', 'Bravo, Votre collection a été renommée');
+
+            return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('collectionn/edit.html.twig', [
+            'collectionn' => $collectionn,
+            'form' => $form,
+        ]);
+    }
+
+
+
+    #[Route('/{id}/del', name: 'app_collectionn_del', methods: ['GET', 'POST'])]
+    public function del(Request $request, Collectionn $collectionn, CollectionnRepository $collectionnRepository): Response
+    {
+        $form = $this->createForm(CollectionnType::class, $collectionn);
+        $form->handleRequest($request);
+
+        // dd($collectionn);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $collectionnRepository->save($collectionn, true);
+
+            // return $this->redirectToRoute('app_collectionn_show', [
+            //     'id' => $collectionn->getId(),
+            // ], 
+            // Response::HTTP_SEE_OTHER);
+
+            $this->addFlash('collectionAjout', 'Bravo, Votre collection a été supprimée');
+            return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
+
+        }
+
+        return $this->renderForm('collectionn/del.html.twig', [
             'collectionn' => $collectionn,
             'form' => $form,
         ]);
@@ -120,7 +152,10 @@ class CollectionnController extends AbstractController
             $collectionnRepository->remove($collectionn, true);
         }
 
-        return $this->redirectToRoute('app_collectionn_index', [], Response::HTTP_SEE_OTHER);
+        // return $this->redirectToRoute('app_collectionn_index', [], Response::HTTP_SEE_OTHER);
+        $this->addFlash('collectionAjout', 'Bravo, Votre collection a été suprimée');
+
+        return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
     }
 
 

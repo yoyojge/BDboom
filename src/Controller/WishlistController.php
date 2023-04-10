@@ -22,6 +22,9 @@ class WishlistController extends AbstractController
         ]);
     }
 
+
+
+
     #[Route('/new', name: 'app_wishlist_new', methods: ['GET', 'POST'])]
     public function new(Request $request, WishlistRepository $wishlistRepository): Response
     {
@@ -30,9 +33,17 @@ class WishlistController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //on definit le user associé et connecté a la collection
+            $user = $this->getUser();
+            $wishlist->setCollector($user);
+
             $wishlistRepository->save($wishlist, true);
 
-            return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
+            //ajout d'un message flash
+            $this->addFlash('collectionAjout', 'Bravo, Votre wishlist a été ajoutée');
+            return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('wishlist/new.html.twig', [
@@ -85,13 +96,46 @@ class WishlistController extends AbstractController
             // dd('coucou');
             $wishlistRepository->save($wishlist, true);
 
-            return $this->redirectToRoute('app_wishlist_show', [
-                'id' => $wishlist->getId(),
-            ], 
-            Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('app_wishlist_show', [
+            //     'id' => $wishlist->getId(),
+            // ], 
+            // Response::HTTP_SEE_OTHER);
+            $this->addFlash('collectionAjout', 'Bravo, Votre wishlit a été renommée');
+            return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
         }
         // dd($form);
         return $this->renderForm('wishlist/edit.html.twig', [
+            'wishlist' => $wishlist,
+            'form' => $form,
+        ]);
+    }
+
+
+
+    #[Route('/{id}/del', name: 'app_wishlist_del', methods: ['GET', 'POST'])]
+    public function del(Request $request, Wishlist $wishlist, WishlistRepository $wishlistRepository): Response
+    {
+        
+        
+        $form = $this->createForm(WishlistType::class, $wishlist);
+        $form->handleRequest($request);
+
+        
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+
+        //     // dd('coucou');
+        //     $wishlistRepository->save($wishlist, true);
+
+        //     // return $this->redirectToRoute('app_wishlist_show', [
+        //     //     'id' => $wishlist->getId(),
+        //     // ], 
+        //     // Response::HTTP_SEE_OTHER);
+        //     $this->addFlash('collectionAjout', 'Bravo, Votre wishlist a été supprimée');
+        //     return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
+        // }
+        // dd($form);
+        return $this->renderForm('wishlist/del.html.twig', [
             'wishlist' => $wishlist,
             'form' => $form,
         ]);
@@ -107,6 +151,8 @@ class WishlistController extends AbstractController
             $wishlistRepository->remove($wishlist, true);
         }
 
-        return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
+        // return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
+        $this->addFlash('collectionAjout', 'Bravo, Votre wishlist a été supprimée');
+        return $this->redirectToRoute('app_BDboom_BDtheque', [], Response::HTTP_SEE_OTHER);
     }
 }

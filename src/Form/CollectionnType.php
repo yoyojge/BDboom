@@ -6,13 +6,20 @@ use App\Entity\Collectionn;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CollectionnType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('CollectionName')
+            ->add('CollectionName', TextType::class, [
+                    'label' => 'Collection',                
+                    'attr' => [
+                        'placeholder' => 'nom de la collection'
+                    ]
+                ],
+            )
             // ->add('collector')
         ;
     }

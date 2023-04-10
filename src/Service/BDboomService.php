@@ -95,6 +95,17 @@ class BDboomService extends AbstractController {
           $this->albumRepository->save($albumObj, true); 
      }
 
+     public function addAnIdBookToAnIdWishlist($wishlistIdSelected, $albumID) 
+     {
+             
+          $wishlistObj = $this->wishlistRepository->findOneBy( array('id' => $wishlistIdSelected ));     
+
+          $albumObj = $this->albumRepository->findOneBy( array('id' => $albumID ));            
+
+          $albumObj->addWishlist($wishlistObj);
+          $this->albumRepository->save($albumObj, true); 
+     }
+
 
 
 

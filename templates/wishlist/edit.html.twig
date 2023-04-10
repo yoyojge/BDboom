@@ -3,11 +3,17 @@
 {% block title %}Edit Wishlist{% endblock %}
 
 {% block body %}
-    <h1>Edit Wishlist</h1>
+<main>
+ <div  id="myCarouselInner" >
+    <div class="bdboomPaddingMain">
+        <h1>Renommer la Wishlist : {{wishlist.WishlistName}}</h1>
 
-    {{ include('wishlist/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('wishlist/_form.html.twig', {'button_label': 'Renommer'}) }}
 
-    <a href="{{ path('app_wishlist_index') }}">back to list</a>
+        {# <a href="{{ path('app_wishlist_index') }}">back to list</a> #}
 
-    {{ include('wishlist/_delete_form.html.twig') }}
+        {# {{ include('wishlist/_delete_form.html.twig') }} #}
+    </div>
+</div>
+</main>
 {% endblock %}

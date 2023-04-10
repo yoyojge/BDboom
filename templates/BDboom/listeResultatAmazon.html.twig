@@ -79,6 +79,14 @@
                                 <input type="hidden" id="listItemsGGbook" name="listItemsGGbook" value="{{listItemsGGbook|json_encode()}}">
                                 <input type="hidden" id="bdsearch" name="bdsearch" value="{{bdsearch}}">
                                 
+                                <div>
+                                    <select name="wishlist" id="wishlist">
+                                    {% for wishlist in wishlists %}
+                                        <option value='{{ wishlist.id }}'> {{ wishlist.id }} :: {{ wishlist.WishlistName }}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+
                                 <div><button type="submit">Ajouter à ma wishlist</button></div>
 
                             </form>   

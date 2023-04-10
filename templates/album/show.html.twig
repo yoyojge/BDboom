@@ -6,6 +6,7 @@
 
 <main>
 <div id="myCarouselInner" >
+<div class="bdboomPaddingMain">
     <h1>Album</h1>
 
     <table class="table">
@@ -18,10 +19,17 @@
                 <th>Title</th>
                 <td>{{ album.title }}</td>
             </tr>
-            <tr>
+            {# <tr>
                 <th>Cover</th>
                 <td>{{ album.cover }}</td>
+            </tr> #}
+
+            <tr>
+                <th>Cover</th>
+                <td> <img src="/images/book/{{ album.cover }}"  alt="{{ album.title }}" /> </td>
             </tr>
+
+           
             <tr>
                 <th>Description</th>
                 <td>{{ album.description }}</td>
@@ -65,7 +73,7 @@
     {# {{ include('album/_delete_form.html.twig') }} #}
 
 
-
+</div>
 </div>
 </main>
 {% endblock %}

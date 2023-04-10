@@ -60,22 +60,23 @@
                     <input type="text" id="bdsearch" name="bdsearch" style="width:75%;" placeholder="Retrouver une BD" />
                     <button>ok</button>
                   </form>
-
-
               </div> 
               
-              <div class="collapse navbar-collapse  col-md-12 order-md-1  justify-content-md-evenly" id="navbarCollapse">
+
+              <div class="col-md-12 order-md-1 collapse navbar-collapse " id="navbarCollapse">
                 
                 <ul class="navbar-nav me-auto mb-2 mb-md-0 col-md-12 justify-content-md-evenly">
-                  
+                  <li class="nav-item">&nbsp;</li>
                   <li class="nav-item">
                     <a class="nav-link " href="https://blog.bdboom.fr">BLOG</a>
                   </li> 
 
                   <li class="nav-item">
-                    <a href="{{ path('app_BDboom_BDtheque') }}"   class="nav-link   {% if not app.user %} disabled  {% endif %}" title="Mes BDtheques">Ma BDtheque</a>
+                    <a href="{{ path('app_BDboom_BDtheque') }}" class="nav-link   {% if not app.user %} disabled  {% endif %}" title="Mes BDtheques">Ma BDtheque</a>                   
                   </li> 
-                                 
+                  <li class="nav-item">
+                   <a href="{{path('app_BDboom_scanner')}}" class="nav-link   {% if not app.user %} disabled  {% endif %}" title="Scanner BD">BDscan</a>
+                  </li>             
                 </ul>
 
               </div>

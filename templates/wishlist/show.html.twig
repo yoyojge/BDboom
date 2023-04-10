@@ -10,9 +10,11 @@
     
 
     <div id="myCarouselInner" >
-    <h1>Wishlist</h1>
+    <div class="bdboomPaddingMain">
 
-    <table class="table">
+    <h1>Wishlist : {{ wishlist.wishlistName }}</h1>
+
+    {# <table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -23,7 +25,7 @@
                 <td>{{ wishlist.wishlistName }}</td>
             </tr>
         </tbody>
-    </table>
+    </table> #}
 
 
 
@@ -44,9 +46,9 @@
                 <td>{{ album.id }}</td>
                 <td>{{ album.title }}</td>
                 <td>
-                    <a href="{{ path('app_album_show', {'id': album.id , 'idWishlist': wishlist.id}) }}">show</a>
+                    <a href="{{ path('app_album_show', {'id': album.id , 'idWishlist': wishlist.id}) }}"><i class="fa-solid fa-eye"></i></a>
 
-                    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idWishlist': wishlist.id}) }}">retirer</a>
+                    <a href="{{ path('app_BDboom_suppItemToCollectionOrWishlist', {'idAlbum': album.id, 'idWishlist': wishlist.id}) }}"><i class="fa-solid fa-trash"></i></a>
 
                     {% if album.refAmazon is defined and album.refAmazon is not null %}
                     <a href="https://www.amazon.fr/dp/{{album.refAmazon}}?tag=bdboom04-21" target="_blank">acheter sur Amazon</a>
@@ -54,7 +56,15 @@
 
                     {# <a href="{{ path('app_BDboom_wishlistToCollection', {'idAlbum': album.id, 'idWishlist': wishlist.id}) }}">ajouter a une collection</a> #}
 
-                    <form action="{{ path('app_BDboom_wishlistToCollection') }}" method="POST">
+                   
+
+                    {# {{ dump(album) }} #}
+                </td>
+            </tr>
+            <tr>
+                 <td></td>
+                <td>
+                 <form action="{{ path('app_BDboom_wishlistToCollection') }}" method="POST">
                         <select name="collectionn" id="collectionn">
                         {% for collectionn in collectionns %}
                             <option value='{{ collectionn.id }}'> {{ collectionn.id }} :: {{ collectionn.CollectionName }}</option>
@@ -67,10 +77,12 @@
                         <button type="submit">Deplacer dans une collection</button>
                         
                     </form>
-
-                    {# {{ dump(album) }} #}
+                
                 </td>
+                
+                  <td></td>
             </tr>
+
              {% else %}
                 <tr>
                     <td colspan="3">no records found</td>
@@ -88,7 +100,7 @@
 
     {{ include('wishlist/_delete_form.html.twig') }} #}
 
-
+    </div>
     </div>
 </main>
 

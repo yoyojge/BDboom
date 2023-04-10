@@ -14,10 +14,10 @@
     
 
     <div id="myCarouselInner" >
+    <div class="bdboomPaddingMain">
+        <h1>BDtheque</h1>
 
-        BDtheque
-
-        <a href="{{path('app_BDboom_scanner')}}">Je scanne mes BD</a>
+        {# <a href="{{path('app_BDboom_scanner')}}">Je scanne mes BD</a> #}
 
         {#  message flash collection ajoutée #}
         {% for message in app.flashes('collectionAjout') %}
@@ -27,36 +27,38 @@
         {% endfor %}
 
 
+        <div style="margin-bottom:50px;">
+            <h2>Mes Collections</h2>
 
-        <h2>Mes Collections</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>CollectionName</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for collectionn in collectionns %}
+                    <tr>
+                        <td>{{ collectionn.id }}</td>
+                        <td>{{ collectionn.CollectionName }}</td>
+                        <td>
+                            <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}"><i class="fa-solid fa-eye"></i></a>
+                            <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a href="{{ path('app_collectionn_del', {'id': collectionn.id}) }}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ path('app_collectionn_new') }}" class="btn btn-primary">ajouter une collection</a>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>CollectionName</th>
-                    <th>actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for collectionn in collectionns %}
-                <tr>
-                    <td>{{ collectionn.id }}</td>
-                    <td>{{ collectionn.CollectionName }}</td>
-                    <td>
-                        <a href="{{ path('app_collectionn_show', {'id': collectionn.id}) }}">VOIR</a>
-                        <a href="{{ path('app_collectionn_edit', {'id': collectionn.id}) }}">RENOMMER</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3">no records found</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        <a href="{{ path('app_collectionn_new') }}">ajouter une collection</a>
+        </div>
 
 
 
@@ -76,8 +78,9 @@
                     <td>{{ wishlist.id }}</td>
                     <td>{{ wishlist.WishlistName }}</td>
                     <td>
-                        <a href="{{ path('app_wishlist_show', {'id': wishlist.id}) }}">VOIR</a>
-                        <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">RENOMMER</a>
+                        <a href="{{ path('app_wishlist_show', {'id': wishlist.id}) }}"><i class="fa-solid fa-eye"></i></a>
+                        <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{{ path('app_wishlist_del', {'id': wishlist.id}) }}"><i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
                 {% else %}
@@ -88,10 +91,10 @@
             </tbody>
         </table>
 
-         <a href="{{ path('app_wishlist_new') }}">ajouter une wishlist</a>
+         <a href="{{ path('app_wishlist_new') }}" class="btn btn-primary">ajouter une wishlist</a>
         
 
-
+    </div>
     </div>
 
 </main>

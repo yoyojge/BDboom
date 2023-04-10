@@ -15,6 +15,15 @@ $nav-link-font-weight: bold;
 @import "/node_modules/bootstrap/scss/bootstrap.scss";
 
 
+
+
+
+.bdboomPaddingMain{
+    padding:20px;
+}
+
+
+
 .fontColorBDblue{
     color : $BDblue;
 }
@@ -48,6 +57,7 @@ a.white:hover{
 body{
     background-color:$BDblue ;
     background-image: url('/public/images/risingSun2.png');
+    background-attachment: fixed;
 }
 
 header,nav, main, footer{

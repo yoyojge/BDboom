@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suppression Wishlist{% endblock %}
+
+{% block body %}
+<main>
+ <div  id="myCarouselInner" >
+    <div class="bdboomPaddingMain">
+        <h1>Supprimer la Wishlist : {{wishlist.WishlistName}}</h1>
+
+        {# {{ include('wishlist/_form.html.twig', {'button_label': 'Update'}) }} #}
+
+        {# <a href="{{ path('app_wishlist_index') }}">back to list</a> #}
+
+        {{ include('wishlist/_delete_form.html.twig') }}
+    </div>
+</div>
+</main>
+{% endblock %}
