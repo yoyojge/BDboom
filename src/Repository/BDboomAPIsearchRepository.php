@@ -311,8 +311,6 @@ class BDboomAPIsearchRepository  extends AbstractController
         echo "Error Message: ", $exception->getMessage(), PHP_EOL;
     }
 
-        dd('coucou');
-
         return $url;
     }
 
@@ -417,8 +415,5 @@ class BDboomAPIsearchRepository  extends AbstractController
 
 
 
-    // public function scrappThis($url)
-    // {   
-    //     return $url;
-    // }
+   
 }

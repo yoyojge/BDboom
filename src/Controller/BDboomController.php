@@ -78,7 +78,7 @@ class BDboomController extends AbstractController
     public function listeResultat(UserRepository $userRepository, BDboomAPIsearchRepository $BDboomAPIsearchRepository, Request $request, AlbumRepository $albumRepository, BDboomRepository $BDboomRepository, CollectionnRepository $collectionnRepository, WishlistRepository $wishlistRepository): Response
     {        
 
-        if(!empty( $this->session->get('listItemsAmazon', []) ) || !empty( $this->session->get('listItemsGGbook', []) )                        ){
+        if(!empty( $this->session->get('listItemsAmazon', []) ) || !empty( $this->session->get('listItemsGGbook', []) )   ){
             
             //si on vient de ajouter a la collection depuis la page liste
             $listItemsBDboom = $this->session->get('listItemsBDboom', []);
